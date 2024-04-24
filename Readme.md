@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Денис Васильев](https://up.htmlacademy.ru/ecmascript/23/user/17030).
-* Наставник: `Неизвестно`.
+* Наставник: [Артем Именин](https://htmlacademy.ru/profile/aimenin).
 
 ---
 
