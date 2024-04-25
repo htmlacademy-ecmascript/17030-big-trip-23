@@ -8,8 +8,8 @@ export default class Presenter {
     const tripEventsEl = document.querySelector('.trip-events');
     const eventsListEl = new EventsListView().getElement();
 
-    eventsListEl.append(new EventCreateView().getElement());
     eventsListEl.append(new EventEditView().getElement());
+    eventsListEl.append(new EventCreateView().getElement());
     Array.from({length: 3}, () => {
       eventsListEl.append(new EventItemView().getElement());
     });
