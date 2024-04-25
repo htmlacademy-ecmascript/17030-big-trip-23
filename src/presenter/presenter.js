@@ -10,7 +10,9 @@ export default class Presenter {
 
     eventsListEl.append(new EventCreateView().getElement());
     eventsListEl.append(new EventEditView().getElement());
-    eventsListEl.append(new EventItemView().getElement());
+    Array.from({length: 3}, () => {
+      eventsListEl.append(new EventItemView().getElement());
+    });
 
     tripEventsEl.append(eventsListEl);
   }
