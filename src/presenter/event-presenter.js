@@ -5,7 +5,7 @@ import EventEditView from '../view/event-edit-view';
 import EventItemView from '../view/event-item-view';
 import SortingView from '../view/sorting-view';
 
-export default class Presenter {
+export default class EventPresenter {
   constructor({ containerEl }) {
     this.containerEl = containerEl;
   }
