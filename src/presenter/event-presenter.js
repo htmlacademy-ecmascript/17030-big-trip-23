@@ -1,13 +1,13 @@
 import { render } from '../render';
 import EventsListView from '../view/events-list-view';
-import EventCreateView from '../view/event-create-view';
 import EventEditView from '../view/event-edit-view';
-import EventItemView from '../view/event-item-view';
+import WaypointView from '../view/waypoint-view';
 import SortingView from '../view/sorting-view';
 
 export default class EventPresenter {
-  constructor({ containerEl }) {
+  constructor({ containerEl, waypointsModel }) {
     this.containerEl = containerEl;
+    this.waypointsModel = waypointsModel;
   }
 
   renderSortingView() {
@@ -25,24 +25,20 @@ export default class EventPresenter {
     render(this.eventEditView, this.eventsListView.getElement());
   }
 
-  renderEventCreateView() {
-    this.eventCreateView = new EventCreateView();
-    render(this.eventCreateView, this.eventsListView.getElement());
-  }
-
-  renderEventItemView() {
-    this.eventItemView = new EventItemView();
-    render(this.eventItemView, this.eventsListView.getElement());
+  renderWaypointView(waypoint) {
+    this.waypointView = new WaypointView(waypoint);
+    render(this.waypointView, this.eventsListView.getElement());
   }
 
   init() {
+    this.waypoints = [...this.waypointsModel.getWaypoints()];
+
     this.renderSortingView();
     this.renderEventsListView();
     this.renderEventEditView();
-    this.renderEventCreateView();
 
-    for (let i = 0; i < 3; i++) {
-      this.renderEventItemView();
+    for (let i = 0; i < this.waypoints.length; i++) {
+      this.renderWaypointView(this.waypoints[i]);
     }
 
     render(this.eventsListView, this.containerEl);
