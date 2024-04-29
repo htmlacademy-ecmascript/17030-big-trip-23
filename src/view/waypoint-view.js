@@ -1,5 +1,5 @@
 import { createElement } from '../render';
-import { getDateStringFromDate, getTimeFromDate } from '../utils';
+import { getDateStringFromDate, getTimeStringFromDate, humanizeDay } from '../utils';
 import { getDestinationById } from '../mock/destinations';
 import { getOffersByType } from '../mock/offers';
 
@@ -33,16 +33,16 @@ const createWaypointView = (waypoint) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="${getDateStringFromDate(timeStart)}">MAR 18</time>
+        <time class="event__date" datetime="${getDateStringFromDate(timeStart)}">${humanizeDay(timeStart)}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${typeImageName}" alt="Event type icon">
         </div>
         <h3 class="event__title">${type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${timeStart.toISOString()}">${getTimeFromDate(timeStart)}</time>
+            <time class="event__start-time" datetime="${timeStart.toISOString()}">${getTimeStringFromDate(timeStart)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${timeEnd.toISOString()}">${getTimeFromDate(timeEnd)}</time>
+            <time class="event__end-time" datetime="${timeEnd.toISOString()}">${getTimeStringFromDate(timeEnd)}</time>
           </p>
           <p class="event__duration">30M</p>
         </div>

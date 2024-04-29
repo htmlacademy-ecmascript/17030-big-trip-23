@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const getRandomPositiveInteger = (min, max) => {
   const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
   const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
@@ -10,21 +12,16 @@ const getRandomArrayItem = (elements) => elements[getRandomPositiveInteger(0, el
 
 const capitaliseFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-const getDateStringFromDate = (date) => {
-  const [dateComponent] = date.toISOString().split('T');
-  return dateComponent;
-};
+const getDateStringFromDate = (date) => dayjs(date).format('YYYY-MM-DD');
 
-const getTimeFromDate = (date) => {
-  const hours = date.getHours().toString(10);
-  const minutes = date.getMinutes().toString(10);
+const getTimeStringFromDate = (date) => dayjs(date).format('HH:mm');
 
-  return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
-};
+const humanizeDay = (date) => dayjs(date).format('MMM D');
 
 export {
   getRandomArrayItem,
   capitaliseFirstLetter,
   getDateStringFromDate,
-  getTimeFromDate,
+  getTimeStringFromDate,
+  humanizeDay,
 };

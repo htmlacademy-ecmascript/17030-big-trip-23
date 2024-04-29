@@ -13,8 +13,8 @@ const mockWaypoints = [
   },
   {
     type: EventType.BUS,
-    timeStart: new Date('2023-03-01T12:25:00.000Z'),
-    timeEnd: new Date('2023-03-01T13:35:00.000Z'),
+    timeStart: new Date('2023-08-06T12:25:00.000Z'),
+    timeEnd: new Date('2023-08-08T13:35:00.000Z'),
     price: 769,
     isFavorite: false,
     offerIds: [3, 4, 7],
@@ -22,8 +22,8 @@ const mockWaypoints = [
   },
   {
     type: EventType.RESTAURANT,
-    timeStart: new Date('2023-03-01T12:25:00.000Z'),
-    timeEnd: new Date('2023-03-01T13:35:00.000Z'),
+    timeStart: new Date('2023-05-01T12:25:00.000Z'),
+    timeEnd: new Date('2023-05-01T13:35:00.000Z'),
     price: 541,
     isFavorite: false,
     offerIds: [1, 5, 6, 7],
