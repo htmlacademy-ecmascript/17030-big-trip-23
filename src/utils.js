@@ -19,6 +19,7 @@ const getTimeStringFromDate = (date) => dayjs(date).format('HH:mm');
 const humanizeDay = (date) => dayjs(date).format('MMM D');
 
 export {
+  getRandomPositiveInteger,
   getRandomArrayItem,
   capitaliseFirstLetter,
   getDateStringFromDate,
