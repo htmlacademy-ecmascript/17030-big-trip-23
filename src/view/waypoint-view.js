@@ -1,7 +1,5 @@
 import { createElement } from '../render';
 import { getDateStringFromDate, getTimeStringFromDate, humanizeDay } from '../utils';
-import { getDestinationById } from '../mock/destinations';
-import { getOffersByType } from '../mock/offers';
 
 const createOfferTemplate = (offer) => {
   const { title, price } = offer;
@@ -13,7 +11,7 @@ const createOfferTemplate = (offer) => {
   </li>`);
 };
 
-const createWaypointView = (waypoint) => {
+const createWaypointView = ({ waypoint, destinations, offers }) => {
   const {
     type,
     timeStart,
@@ -26,9 +24,9 @@ const createWaypointView = (waypoint) => {
 
   const typeImageName = `${type.toLowerCase()}.png`;
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
-  const destination = getDestinationById(destinationId);
-  const offers = getOffersByType(type);
-  const selectedOffers = offers.filter(({ id }) => offerIds.includes(id));
+  const destination = destinations.find(({ id }) => id === destinationId) || {};
+  const pointTypeOffers = offers.find((offer) => offer.type === type).offers;
+  const selectedOffers = pointTypeOffers.filter(({ id }) => offerIds.includes(id));
 
   return (
     `<li class="trip-events__item">
@@ -68,12 +66,18 @@ const createWaypointView = (waypoint) => {
 };
 
 export default class WaypointView {
-  constructor(waypoint) {
+  constructor({ waypoint, destinations, offers }) {
     this.waypoint = waypoint;
+    this.destinations = destinations;
+    this.offers = offers;
   }
 
   getTemplate() {
-    return createWaypointView(this.waypoint);
+    return createWaypointView({
+      waypoint: this.waypoint,
+      destinations: this.destinations,
+      offers: this.offers,
+    });
   }
 
   getElement() {
