@@ -30,6 +30,6 @@ const mockDestinations = [
   },
 ];
 
-const getDestinationById = (destinationId) => mockDestinations.find(({ id }) => id === destinationId);
+const getDestinations = () => mockDestinations;
 
-export { getDestinationById };
+export { getDestinations };

@@ -1,9 +1,9 @@
-import { EventType } from '../const';
+import { WaypointEventType } from '../const';
 import { getRandomArrayItem } from '../utils';
 
 const mockWaypoints = [
   {
-    type: EventType.TAXI,
+    type: WaypointEventType.TAXI,
     timeStart: new Date('2023-03-18T10:30:00.000Z'),
     timeEnd: new Date('2023-03-18T11:00:00.000Z'),
     price: 1200,
@@ -12,7 +12,7 @@ const mockWaypoints = [
     destinationId: 1,
   },
   {
-    type: EventType.BUS,
+    type: WaypointEventType.BUS,
     timeStart: new Date('2023-08-06T12:25:00.000Z'),
     timeEnd: new Date('2023-08-08T13:35:00.000Z'),
     price: 769,
@@ -21,7 +21,7 @@ const mockWaypoints = [
     destinationId: 2,
   },
   {
-    type: EventType.RESTAURANT,
+    type: WaypointEventType.RESTAURANT,
     timeStart: new Date('2023-05-01T12:25:00.000Z'),
     timeEnd: new Date('2023-05-01T13:35:00.000Z'),
     price: 541,
