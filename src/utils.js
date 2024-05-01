@@ -1,5 +1,10 @@
 import dayjs from 'dayjs';
 
+const MONTH_DAY_FORMAT = 'MMM D';
+const TIME_FORMAT = 'HH:mm';
+const ISO_DATE_FORMAT = 'YYYY-MM-DD';
+const DATE_FORMAT = `DD/MM/YY ${TIME_FORMAT}`;
+
 const getRandomPositiveInteger = (min, max) => {
   const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
   const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
@@ -12,11 +17,13 @@ const getRandomArrayItem = (elements) => elements[getRandomPositiveInteger(0, el
 
 const capitaliseFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-const getDateStringFromDate = (date) => dayjs(date).format('YYYY-MM-DD');
+const getDateStringFromDate = (date) => date ? dayjs(date).format(ISO_DATE_FORMAT) : '';
 
-const getTimeStringFromDate = (date) => dayjs(date).format('HH:mm');
+const getTimeStringFromDate = (date) => date ? dayjs(date).format(TIME_FORMAT) : '';
 
-const humanizeDay = (date) => dayjs(date).format('MMM D');
+const humanizeDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
+
+const humanizeDate = (date) => date ? dayjs(date).format(DATE_FORMAT) : '';
 
 export {
   getRandomPositiveInteger,
@@ -25,4 +32,5 @@ export {
   getDateStringFromDate,
   getTimeStringFromDate,
   humanizeDay,
+  humanizeDate,
 };
