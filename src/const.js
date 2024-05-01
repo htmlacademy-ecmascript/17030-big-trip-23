@@ -1,4 +1,4 @@
-const EventType = {
+const WaypointEventType = {
   TAXI: 'taxi',
   BUS: 'bus',
   TRAIN: 'train',
@@ -11,5 +11,5 @@ const EventType = {
 };
 
 export {
-  EventType,
+  WaypointEventType,
 };
