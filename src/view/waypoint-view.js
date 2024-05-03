@@ -42,7 +42,6 @@ const createWaypointView = ({ waypoint, destinations, offers }) => {
             &mdash;
             <time class="event__end-time" datetime="${timeEnd.toISOString()}">${getTimeStringFromDate(timeEnd)}</time>
           </p>
-          <p class="event__duration">30M</p>
           <p class="event__duration">${printDuration(timeStart, timeEnd)}</p>
         </div>
         <p class="event__price">
