@@ -1,5 +1,5 @@
 import { createElement } from '../render';
-import { getDateStringFromDate, getTimeStringFromDate, humanizeDay } from '../utils';
+import { getDateStringFromDate, getTimeStringFromDate, humanizeDay, printDuration } from '../utils';
 
 const createOfferTemplate = (offer) => {
   const { title, price } = offer;
@@ -43,6 +43,7 @@ const createWaypointView = ({ waypoint, destinations, offers }) => {
             <time class="event__end-time" datetime="${timeEnd.toISOString()}">${getTimeStringFromDate(timeEnd)}</time>
           </p>
           <p class="event__duration">30M</p>
+          <p class="event__duration">${printDuration(timeStart, timeEnd)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
