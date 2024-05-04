@@ -4,12 +4,12 @@ import { capitaliseFirstLetter, humanizeDate } from '../utils';
 
 const BLANK_WAYPOINT = {
   type: WaypointEventType.FLIGHT,
-  timeStart: null,
-  timeEnd: null,
-  price: 0,
+  dateFrom: null,
+  dateTo: null,
+  basePrice: 0,
   isFavorite: false,
-  offerIds: [],
-  destinationId: null,
+  offers: [],
+  destination: null,
 };
 
 const createWaypointTypeTemplate = (eventType) => {
@@ -89,27 +89,31 @@ const createWaypointOffersTemplate = (availableOffers, selectedOfferIds) => (
   </section>`
 );
 
-const createDestinationPhotoTemplate = (photo) => (
-  `<img class="event__photo" src="${photo}" alt="Event photo">`
-);
+const createDestinationPhotoTemplate = (picture) => {
+  const { src, description } = picture;
 
-const createDestinationPhotosTemplate = (photos) => (
+  return (
+    `<img class="event__photo" src="${src}" alt="${description}">`
+  );
+};
+
+const createDestinationPhotosTemplate = (picture) => (
   `<div class="event__photos-container">
     <div class="event__photos-tape">
-      ${photos.map(createDestinationPhotoTemplate)}
+      ${picture.map(createDestinationPhotoTemplate)}
     </div>
   </div>`
 );
 
 const createDestinationDescriptionTemplate = (destination) => {
-  const { description, photos } = destination;
+  const { description, pictures } = destination;
 
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
 
-      ${photos?.length ? createDestinationPhotosTemplate(photos) : ''}
+      ${pictures?.length ? createDestinationPhotosTemplate(pictures) : ''}
     </section>`
   );
 };
@@ -117,15 +121,15 @@ const createDestinationDescriptionTemplate = (destination) => {
 const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
   const {
     type,
-    timeStart,
-    timeEnd,
-    price,
-    offerIds,
-    destinationId,
+    dateFrom,
+    dateTo,
+    basePrice,
+    offers: offerIds,
+    destination,
   } = waypoint;
 
   const pointTypeOffers = offers.find((offer) => offer.type === type).offers;
-  const destination = destinations.find(({ id }) => id === destinationId) || {};
+  const pointDestination = destinations.find(({ id }) => id === destination) || {};
 
   return (
     `<li class="trip-events__item">
@@ -133,14 +137,14 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
           <header class="event__header">
             ${createWaypointTypeSelectTemplate(type)}
 
-            ${createDestinationSelectTemplate(type, destination, destinations)}
+            ${createDestinationSelectTemplate(type, pointDestination, destinations)}
 
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">From</label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(timeStart)}">
+              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}">
               &mdash;
               <label class="visually-hidden" for="event-end-time-1">To</label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(timeEnd)}">
+              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dateTo)}">
             </div>
 
             <div class="event__field-group  event__field-group--price">
@@ -148,7 +152,7 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -160,7 +164,7 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
           <section class="event__details">
             ${pointTypeOffers.length ? createWaypointOffersTemplate(pointTypeOffers, offerIds) : ''}
 
-            ${destinationId ? createDestinationDescriptionTemplate(destination) : ''}
+            ${destination ? createDestinationDescriptionTemplate(pointDestination) : ''}
           </section>
         </form>
       </li>`
