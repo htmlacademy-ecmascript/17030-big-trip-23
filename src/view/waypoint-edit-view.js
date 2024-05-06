@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { WaypointEventType } from '../const';
 import { capitaliseFirstLetter, humanizeDate } from '../utils';
 
@@ -171,30 +171,23 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
   );
 };
 
-export default class WaypointEditView {
+export default class WaypointEditView extends AbstractView {
+  #waypoint = null;
+  #destinations = [];
+  #offers = [];
+
   constructor({ waypoint = BLANK_WAYPOINT, destinations, offers }) {
-    this.waypoint = waypoint;
-    this.destinations = destinations;
-    this.offers = offers;
+    super();
+    this.#waypoint = waypoint;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
-  getTemplate() {
+  get template() {
     return createWaypointEditTemplate({
-      waypoint: this.waypoint,
-      destinations: this.destinations,
-      offers: this.offers,
+      waypoint: this.#waypoint,
+      destinations: this.#destinations,
+      offers: this.#offers,
     });
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

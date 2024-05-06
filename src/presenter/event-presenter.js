@@ -1,4 +1,4 @@
-import { render } from '../render';
+import { render } from '../framework/render';
 import EventsListView from '../view/events-list-view';
 import WaypointEditView from '../view/waypoint-edit-view';
 import WaypointView from '../view/waypoint-view';
@@ -28,7 +28,7 @@ export default class EventPresenter {
       destinations,
       offers,
     });
-    render(this.waypointEditView, this.eventsListView.getElement());
+    render(this.waypointEditView, this.eventsListView.element);
   }
 
   renderWaypointView({ waypoint, destinations, offers }) {
@@ -37,7 +37,7 @@ export default class EventPresenter {
       destinations,
       offers,
     });
-    render(this.waypointView, this.eventsListView.getElement());
+    render(this.waypointView, this.eventsListView.element);
   }
 
   init() {

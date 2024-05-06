@@ -1,5 +1,5 @@
-import { createElement } from '../render';
 import { getDateStringFromDate, getTimeStringFromDate, humanizeDay, printDuration } from '../utils';
+import AbstractView from '../framework/view/abstract-view';
 
 const createOfferTemplate = (offer) => {
   const { title, price } = offer;
@@ -65,30 +65,23 @@ const createWaypointView = ({ waypoint, destinations, offers }) => {
   );
 };
 
-export default class WaypointView {
+export default class WaypointView extends AbstractView {
+  #waypoint = null;
+  #destinations = [];
+  #offers = [];
+
   constructor({ waypoint, destinations, offers }) {
-    this.waypoint = waypoint;
-    this.destinations = destinations;
-    this.offers = offers;
+    super();
+    this.#waypoint = waypoint;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
-  getTemplate() {
+  get template() {
     return createWaypointView({
-      waypoint: this.waypoint,
-      destinations: this.destinations,
-      offers: this.offers,
+      waypoint: this.#waypoint,
+      destinations: this.#destinations,
+      offers: this.#offers,
     });
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
