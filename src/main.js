@@ -1,4 +1,4 @@
-import { render } from './render';
+import { render } from './framework/render';
 import FiltersView from './view/filters-view';
 import EventPresenter from './presenter/event-presenter';
 import WaypointsModel from './model/waypoints-model';

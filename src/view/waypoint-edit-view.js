@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { WaypointEventType } from '../const';
 import { capitaliseFirstLetter, humanizeDate } from '../utils';
 
@@ -171,30 +171,50 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
   );
 };
 
-export default class WaypointEditView {
-  constructor({ waypoint = BLANK_WAYPOINT, destinations, offers }) {
-    this.waypoint = waypoint;
-    this.destinations = destinations;
-    this.offers = offers;
+export default class WaypointEditView extends AbstractView {
+  #waypoint = null;
+  #destinations = [];
+  #offers = [];
+  #handleBtnFoldClick = null;
+  #handleSubmit = null;
+  #handleReset = null;
+
+  constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onReset }) {
+    super();
+    this.#waypoint = waypoint;
+    this.#destinations = destinations;
+    this.#offers = offers;
+    this.#handleBtnFoldClick = onBtnFoldClick;
+    this.#handleSubmit = onSubmit;
+    this.#handleReset = onReset;
+
+    const formEl = this.element.querySelector('.event--edit');
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
+    formEl.addEventListener('submit', this.#formSubmitHandler);
+    formEl.addEventListener('reset', this.#formResetHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createWaypointEditTemplate({
-      waypoint: this.waypoint,
-      destinations: this.destinations,
-      offers: this.offers,
+      waypoint: this.#waypoint,
+      destinations: this.#destinations,
+      offers: this.#offers,
     });
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #btnFoldClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleBtnFoldClick();
+  };
 
-    return this.element;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleSubmit();
+  };
 
-  removeElement() {
-    this.element = null;
-  }
+  #formResetHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleReset();
+  };
 }

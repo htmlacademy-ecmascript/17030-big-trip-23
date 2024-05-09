@@ -1,66 +1,86 @@
-import { render } from '../render';
+import { render, replace } from '../framework/render';
 import EventsListView from '../view/events-list-view';
 import WaypointEditView from '../view/waypoint-edit-view';
 import WaypointView from '../view/waypoint-view';
 import SortingView from '../view/sorting-view';
 
 export default class EventPresenter {
+  #containerEl = null;
+  #waypointsModel = null;
+  #destinationsModel = null;
+  #offersModel = null;
+
+  #sortingComponent = new SortingView();
+  #eventsListComponent = new EventsListView();
+
+  #waypoints = [];
+  #destinations = [];
+  #offers = [];
+
   constructor({ containerEl, waypointsModel, destinationsModel, offersModel }) {
-    this.containerEl = containerEl;
-    this.waypointsModel = waypointsModel;
-    this.destinationsModel = destinationsModel;
-    this.offersModel = offersModel;
-  }
-
-  renderSortingView() {
-    this.sortingView = new SortingView();
-    render(this.sortingView, this.containerEl);
-  }
-
-  renderEventsListView() {
-    this.eventsListView = new EventsListView();
-    render(this.eventsListView, this.containerEl);
-  }
-
-  renderWaypointEditView({ waypoint, destinations, offers }) {
-    this.waypointEditView = new WaypointEditView({
-      waypoint,
-      destinations,
-      offers,
-    });
-    render(this.waypointEditView, this.eventsListView.getElement());
-  }
-
-  renderWaypointView({ waypoint, destinations, offers }) {
-    this.waypointView = new WaypointView({
-      waypoint,
-      destinations,
-      offers,
-    });
-    render(this.waypointView, this.eventsListView.getElement());
+    this.#containerEl = containerEl;
+    this.#waypointsModel = waypointsModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
   }
 
   init() {
-    this.waypoints = [...this.waypointsModel.getWaypoints()];
-    this.destinations = [...this.destinationsModel.getDestinations()];
-    this.offers = [...this.offersModel.getOffers()];
+    this.#waypoints = [...this.#waypointsModel.waypoints];
+    this.#destinations = [...this.#destinationsModel.destinations];
+    this.#offers = [...this.#offersModel.offers];
 
-    this.renderSortingView();
-    this.renderEventsListView();
-    this.renderWaypointEditView({
-      waypoint: this.waypoints[0],
-      destinations: this.destinations,
-      offers: this.offers,
+    render(this.#sortingComponent, this.#containerEl);
+    render(this.#eventsListComponent, this.#containerEl);
+
+    for (let i = 0; i < this.#waypoints.length; i++) {
+      this.#renderWaypoint(this.#waypoints[i]);
+    }
+  }
+
+  #renderWaypoint(waypoint) {
+    const escKeydownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceEditedWaypointToWaypoint();
+        document.removeEventListener('keydown', escKeydownHandler);
+      }
+    };
+
+    const waypointComponent = new WaypointView({
+      waypoint: waypoint,
+      destinations: this.#destinations,
+      offers: this.#offers,
+      onBtnUnfoldClick() {
+        replaceWaypointToEditedWaypoint();
+        document.addEventListener('keydown', escKeydownHandler);
+      },
     });
 
-    for (let i = 1; i < this.waypoints.length; i++) {
-      this.renderWaypointView({
-        waypoint: this.waypoints[i],
-        destinations: this.destinations,
-        offers: this.offers,
-      });
+    const waypointEditComponent = new WaypointEditView({
+      waypoint: waypoint,
+      destinations: this.#destinations,
+      offers: this.#offers,
+      onBtnFoldClick() {
+        replaceEditedWaypointToWaypoint();
+        document.removeEventListener('keydown', escKeydownHandler);
+      },
+      onSubmit() {
+        replaceEditedWaypointToWaypoint();
+        document.removeEventListener('keydown', escKeydownHandler);
+      },
+      onReset() {
+        replaceEditedWaypointToWaypoint();
+        document.removeEventListener('keydown', escKeydownHandler);
+      },
+    });
+
+    function replaceWaypointToEditedWaypoint() {
+      replace(waypointEditComponent, waypointComponent);
+    }
+    function replaceEditedWaypointToWaypoint() {
+      replace(waypointComponent, waypointEditComponent);
     }
 
-    render(this.eventsListView, this.containerEl);
+    render(waypointComponent, this.#eventsListComponent.element);
   }
 }
