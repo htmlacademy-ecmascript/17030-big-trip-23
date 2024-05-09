@@ -4,6 +4,7 @@ import WaypointEditView from '../view/waypoint-edit-view';
 import WaypointView from '../view/waypoint-view';
 import SortingView from '../view/sorting-view';
 import EmptyEventsView from '../view/empty-events-view';
+import FailedLoadView from '../view/failed-load-view';
 
 export default class EventPresenter {
   #containerEl = null;
@@ -14,6 +15,7 @@ export default class EventPresenter {
 
   #sortingComponent = new SortingView();
   #eventsListComponent = new EventsListView();
+  #failedLoadComponent = new FailedLoadView();
 
   #waypoints = [];
   #destinations = [];
