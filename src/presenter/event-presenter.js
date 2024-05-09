@@ -4,14 +4,13 @@ import WaypointEditView from '../view/waypoint-edit-view';
 import WaypointView from '../view/waypoint-view';
 import SortingView from '../view/sorting-view';
 import EmptyEventsView from '../view/empty-events-view';
-import { FilterType } from '../const';
 
 export default class EventPresenter {
   #containerEl = null;
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
-  #activeFilter = FilterType.EVERYTHING;
+  #activeFilter = null;
 
   #sortingComponent = new SortingView();
   #eventsListComponent = new EventsListView();
@@ -20,11 +19,12 @@ export default class EventPresenter {
   #destinations = [];
   #offers = [];
 
-  constructor({ containerEl, waypointsModel, destinationsModel, offersModel }) {
+  constructor({ containerEl, waypointsModel, destinationsModel, offersModel, activeFilter }) {
     this.#containerEl = containerEl;
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#activeFilter = activeFilter;
   }
 
   init() {
