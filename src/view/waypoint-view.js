@@ -69,12 +69,16 @@ export default class WaypointView extends AbstractView {
   #waypoint = null;
   #destinations = [];
   #offers = [];
+  #handleBtnUnfoldClick = null;
 
-  constructor({ waypoint, destinations, offers }) {
+  constructor({ waypoint, destinations, offers, onBtnUnfoldClick }) {
     super();
     this.#waypoint = waypoint;
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#handleBtnUnfoldClick = onBtnUnfoldClick;
+
+    this.element.addEventListener('click', this.#btnUnfoldClickHandler);
   }
 
   get template() {
@@ -84,4 +88,9 @@ export default class WaypointView extends AbstractView {
       offers: this.#offers,
     });
   }
+
+  #btnUnfoldClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleBtnUnfoldClick();
+  };
 }
