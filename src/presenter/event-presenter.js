@@ -42,7 +42,7 @@ export default class EventPresenter {
       if (evt.key === 'Escape') {
         evt.preventDefault();
         replaceEditedWaypointToWaypoint();
-        window.document.removeEventListener('keydown', escKeydownHandler);
+        document.removeEventListener('keydown', escKeydownHandler);
       }
     };
 
@@ -52,7 +52,7 @@ export default class EventPresenter {
       offers: this.#offers,
       onBtnUnfoldClick() {
         replaceWaypointToEditedWaypoint();
-        window.document.addEventListener('keydown', escKeydownHandler);
+        document.addEventListener('keydown', escKeydownHandler);
       },
     });
 
@@ -62,18 +62,25 @@ export default class EventPresenter {
       offers: this.#offers,
       onBtnFoldClick() {
         replaceEditedWaypointToWaypoint();
-        window.document.removeEventListener('keydown', escKeydownHandler);
+        document.removeEventListener('keydown', escKeydownHandler);
+      },
+      onSubmit() {
+        replaceEditedWaypointToWaypoint();
+        document.removeEventListener('keydown', escKeydownHandler);
+      },
+      onReset() {
+        replaceEditedWaypointToWaypoint();
+        document.removeEventListener('keydown', escKeydownHandler);
       },
     });
-
-    render(waypointComponent, this.#eventsListComponent.element);
 
     function replaceWaypointToEditedWaypoint() {
       replace(waypointEditComponent, waypointComponent);
     }
-
     function replaceEditedWaypointToWaypoint() {
       replace(waypointComponent, waypointEditComponent);
     }
+
+    render(waypointComponent, this.#eventsListComponent.element);
   }
 }
