@@ -3,12 +3,15 @@ import EventsListView from '../view/events-list-view';
 import WaypointEditView from '../view/waypoint-edit-view';
 import WaypointView from '../view/waypoint-view';
 import SortingView from '../view/sorting-view';
+import EmptyEventsView from '../view/empty-events-view';
+import { FilterType } from '../const';
 
 export default class EventPresenter {
   #containerEl = null;
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #activeFilter = FilterType.EVERYTHING;
 
   #sortingComponent = new SortingView();
   #eventsListComponent = new EventsListView();
@@ -32,9 +35,19 @@ export default class EventPresenter {
     render(this.#sortingComponent, this.#containerEl);
     render(this.#eventsListComponent, this.#containerEl);
 
+    if (!this.#waypoints.length) {
+      this.#renderEmptyEventComponent();
+      return;
+    }
+
     for (let i = 0; i < this.#waypoints.length; i++) {
       this.#renderWaypoint(this.#waypoints[i]);
     }
+  }
+
+  #renderEmptyEventComponent() {
+    const emptyEventsComponent = new EmptyEventsView({ activeFilter: this.#activeFilter });
+    render(emptyEventsComponent, this.#containerEl);
   }
 
   #renderWaypoint(waypoint) {
@@ -77,6 +90,7 @@ export default class EventPresenter {
     function replaceWaypointToEditedWaypoint() {
       replace(waypointEditComponent, waypointComponent);
     }
+
     function replaceEditedWaypointToWaypoint() {
       replace(waypointComponent, waypointEditComponent);
     }
