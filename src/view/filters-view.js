@@ -1,37 +1,41 @@
 import AbstractView from '../framework/view/abstract-view';
 import { capitaliseFirstLetter } from '../utils/common';
 
-const FILTERS = [
-  'everything',
-  'future',
-  'present',
-  'past',
-];
+const createFilterItemTemplate = (filter, activeFilter) => {
+  const { type, hasItems } = filter;
+  const checkedAttr = activeFilter === filter ? 'checked' : '';
+  const disabledAttr = !hasItems ? 'disabled' : '';
 
-const createFilterItemTemplate = (filter, activeFilter) => (
-  `<div class="trip-filters__filter">
-    <input id="filter-${filter}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter}" ${filter === activeFilter ? 'checked' : ''}>
-    <label class="trip-filters__filter-label" for="filter-everything">${capitaliseFirstLetter(filter)}</label>
-  </div>`
-);
+  return (
+    `<div class="trip-filters__filter">
+      <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${checkedAttr} ${disabledAttr}>
+      <label class="trip-filters__filter-label" for="filter-everything">${capitaliseFirstLetter(type)}</label>
+    </div>`
+  );
+};
 
-const createFiltersTemplate = (activeFilter) => (
+const createFiltersTemplate = ({ filters, activeFilter }) => (
   `<form class="trip-filters" action="#" method="get">
-      ${FILTERS.map((it) => createFilterItemTemplate(it, activeFilter)).join('')}
+      ${filters.map((filter) => createFilterItemTemplate(filter, activeFilter)).join('')}
 
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`
 );
 
 export default class FiltersView extends AbstractView {
+  #filters = [];
   #activeFilter = null;
 
-  constructor({ activeFilter }) {
+  constructor({ filters, activeFilter }) {
     super();
+    this.#filters = filters;
     this.#activeFilter = activeFilter;
   }
 
   get template() {
-    return createFiltersTemplate(this.#activeFilter);
+    return createFiltersTemplate({
+      filters: this.#filters,
+      activeFilter: this.#activeFilter,
+    });
   }
 }
