@@ -1,4 +1,4 @@
-import { getRandomArrayItem, getRandomPositiveInteger } from '../utils';
+import { getRandomArrayItem, getRandomPositiveInteger } from '../utils/common';
 
 const PHOTO_ADDRESS = 'https://loremflickr.com/248/152?random=';
 const PHOTO_DESCRIPTIONS = [

@@ -10,6 +10,14 @@ const WaypointEventType = {
   RESTAURANT: 'restaurant',
 };
 
+const FilterType = {
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  PRESENT: 'present',
+  FUTURE: 'future',
+};
+
 export {
   WaypointEventType,
+  FilterType,
 };
