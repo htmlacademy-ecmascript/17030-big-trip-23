@@ -1,4 +1,4 @@
-import { getDateStringFromDate, getTimeStringFromDate, humanizeDay, printDuration } from '../utils';
+import { getDateStringFromDate, getTimeStringFromDate, humanizeDay, printDuration } from '../utils/waypoint';
 import AbstractView from '../framework/view/abstract-view';
 
 const createOfferTemplate = (offer) => {

@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { WaypointEventType } from '../const';
-import { capitaliseFirstLetter, humanizeDate } from '../utils';
+import { humanizeDate } from '../utils/waypoint';
+import { capitaliseFirstLetter } from '../utils/common';
 
 const BLANK_WAYPOINT = {
   type: WaypointEventType.FLIGHT,

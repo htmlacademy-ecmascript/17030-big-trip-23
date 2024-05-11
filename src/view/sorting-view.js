@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { capitaliseFirstLetter } from '../utils';
+import { capitaliseFirstLetter } from '../utils/common';
 
 const SORTING_LIST = [
   'day',

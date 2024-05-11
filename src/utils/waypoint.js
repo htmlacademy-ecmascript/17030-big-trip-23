@@ -1,24 +1,16 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 dayjs.extend(duration);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const MONTH_DAY_FORMAT = 'MMM D';
 const TIME_FORMAT = 'HH:mm';
 const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 const DATE_FORMAT = `DD/MM/YY ${TIME_FORMAT}`;
-
-const getRandomPositiveInteger = (min, max) => {
-  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
-  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
-  const result = Math.random() * (upper - lower + 1) + lower;
-
-  return Math.floor(result);
-};
-
-const getRandomArrayItem = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
-
-const capitaliseFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
 const getDateStringFromDate = (date) => date ? dayjs(date).format(ISO_DATE_FORMAT) : '';
 
@@ -54,13 +46,19 @@ const printDuration = (start, end) => {
   return minutes;
 };
 
+const isEventInPast = (event) => dayjs().isAfter(event.dateTo);
+
+const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && dayjs().isSameOrBefore(event.dateTo);
+
+const isEventInFuture = (event) => dayjs().isAfter(event.dateFrom);
+
 export {
-  getRandomPositiveInteger,
-  getRandomArrayItem,
-  capitaliseFirstLetter,
   getDateStringFromDate,
   getTimeStringFromDate,
   humanizeDay,
   humanizeDate,
   printDuration,
+  isEventInPast,
+  isEventInPresent,
+  isEventInFuture,
 };

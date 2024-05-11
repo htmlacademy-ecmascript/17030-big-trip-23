@@ -1,5 +1,5 @@
 import { WaypointEventType } from '../const';
-import { getRandomArrayItem } from '../utils';
+import { getRandomArrayItem } from '../utils/common';
 
 const mockWaypoints = [
   {
