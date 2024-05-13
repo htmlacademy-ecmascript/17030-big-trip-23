@@ -1,13 +1,12 @@
-import { render } from './framework/render';
-import FiltersView from './view/filters-view';
 import EventPresenter from './presenter/event-presenter';
 import WaypointsModel from './model/waypoints-model';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import { FilterType } from './const';
 import { generateFilter } from './mock/filter';
+import HeaderPresenter from './presenter/header-presenter';
 
-const tripControlsFiltersEl = document.querySelector('.trip-controls__filters');
+const headerContainerEl = document.querySelector('.page-body');
 const tripEventsEl = document.querySelector('.trip-events');
 
 const waypointsModel = new WaypointsModel();
@@ -15,6 +14,12 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const activeFilter = FilterType.EVERYTHING;
 const filters = generateFilter(waypointsModel.waypoints);
+
+const headerPresenter = new HeaderPresenter({
+  containerEl: headerContainerEl,
+  filters,
+  activeFilter,
+});
 
 const eventPresenter = new EventPresenter({
   containerEl: tripEventsEl,
@@ -24,6 +29,5 @@ const eventPresenter = new EventPresenter({
   activeFilter,
 });
 
-render(new FiltersView({ filters, activeFilter }), tripControlsFiltersEl);
-
+headerPresenter.init();
 eventPresenter.init();
