@@ -52,6 +52,8 @@ const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && day
 
 const isEventInFuture = (event) => dayjs().isAfter(event.dateFrom);
 
+const updateWaypoint = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
 export {
   getDateStringFromDate,
   getTimeStringFromDate,
@@ -61,4 +63,5 @@ export {
   isEventInPast,
   isEventInPresent,
   isEventInFuture,
+  updateWaypoint,
 };

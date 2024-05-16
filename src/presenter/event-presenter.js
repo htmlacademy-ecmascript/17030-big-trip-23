@@ -5,6 +5,7 @@ import NoEventsView from '../view/no-events-view';
 import FailedLoadView from '../view/failed-load-view';
 import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
+import { updateWaypoint } from '../utils/waypoint';
 
 export default class EventPresenter {
   #waypointPresenters = new Map();
@@ -68,9 +69,15 @@ export default class EventPresenter {
       waypointsContainerEl: this.#eventsListComponent.element,
       destinations: this.#destinations,
       offers: this.#offers,
+      onDataChange: this.#handleWaypointChange,
     });
 
     waypointPresenter.init(waypoint);
     this.#waypointPresenters.set(waypoint.id, waypointPresenter);
   }
+
+  #handleWaypointChange = (updatedWaypoint) => {
+    updateWaypoint(this.#waypoints, updatedWaypoint);
+    this.#waypointPresenters.get(updatedWaypoint.id).init(updatedWaypoint);
+  };
 }
