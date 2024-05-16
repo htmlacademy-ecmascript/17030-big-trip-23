@@ -7,63 +7,73 @@ export default class WaypointPresenter {
   #destinations = [];
   #offers = [];
   #waypoint = null;
+  #waypointComponent = null;
+  #waypointEditComponent = null;
 
-  constructor({ waypointsContainerEl, destinations, offers, waypoint }) {
+  constructor({ waypointsContainerEl, destinations, offers }) {
     this.#waypointsContainerEl = waypointsContainerEl;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#waypoint = waypoint;
   }
 
-  init() {
+  init(waypoint) {
+    this.#waypoint = waypoint;
     this.#renderWaypoint(this.#waypoint);
   }
 
   #renderWaypoint(waypoint) {
-    const escKeydownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceEditedWaypointToWaypoint();
-        document.removeEventListener('keydown', escKeydownHandler);
-      }
-    };
-
-    const waypointComponent = new WaypointView({
+    this.#waypointComponent = new WaypointView({
       waypoint: waypoint,
       destinations: this.#destinations,
       offers: this.#offers,
-      onBtnUnfoldClick() {
-        replaceWaypointToEditedWaypoint();
-        document.addEventListener('keydown', escKeydownHandler);
-      },
+      onBtnUnfoldClick: this.#handleBtnUnfoldClick,
     });
 
-    const waypointEditComponent = new WaypointEditView({
+    this.#waypointEditComponent = new WaypointEditView({
       waypoint: waypoint,
       destinations: this.#destinations,
       offers: this.#offers,
-      onBtnFoldClick() {
-        replaceEditedWaypointToWaypoint();
-        document.removeEventListener('keydown', escKeydownHandler);
-      },
-      onSubmit() {
-        replaceEditedWaypointToWaypoint();
-        document.removeEventListener('keydown', escKeydownHandler);
-      },
-      onReset() {
-        replaceEditedWaypointToWaypoint();
-        document.removeEventListener('keydown', escKeydownHandler);
-      },
+      onBtnFoldClick: this.#handleBtnFoldClick,
+      onSubmit: this.#handleFormSubmit,
+      onReset: this.#handleFormReset,
     });
 
-    function replaceWaypointToEditedWaypoint() {
-      replace(waypointEditComponent, waypointComponent);
-    }
-
-    function replaceEditedWaypointToWaypoint() {
-      replace(waypointComponent, waypointEditComponent);
-    }
-
-    render(waypointComponent, this.#waypointsContainerEl);
+    render(this.#waypointComponent, this.#waypointsContainerEl);
   }
+
+  #escKeydownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceEditedWaypointToWaypoint();
+      document.removeEventListener('keydown', this.#escKeydownHandler);
+    }
+  };
+
+  #handleBtnUnfoldClick = () => {
+    this.#replaceWaypointToEditedWaypoint();
+    document.addEventListener('keydown', this.#escKeydownHandler);
+  };
+
+  #handleBtnFoldClick = () => {
+    this.#replaceEditedWaypointToWaypoint();
+    document.removeEventListener('keydown', this.#escKeydownHandler);
+  };
+
+  #handleFormSubmit = () => {
+    this.#replaceEditedWaypointToWaypoint();
+    document.removeEventListener('keydown', this.#escKeydownHandler);
+  };
+
+  #handleFormReset = () => {
+    this.#replaceEditedWaypointToWaypoint();
+    document.removeEventListener('keydown', this.#escKeydownHandler);
+  };
+
+  #replaceWaypointToEditedWaypoint = () => {
+    replace(this.#waypointEditComponent, this.#waypointComponent);
+  };
+
+  #replaceEditedWaypointToWaypoint = () => {
+    replace(this.#waypointComponent, this.#waypointEditComponent);
+  };
 }

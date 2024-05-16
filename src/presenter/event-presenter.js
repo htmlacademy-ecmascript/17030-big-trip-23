@@ -38,6 +38,10 @@ export default class EventPresenter {
     render(this.#sortingComponent, this.#containerEl);
     render(this.#eventsListComponent, this.#containerEl);
 
+    this.#renderWaypoints();
+  }
+
+  #renderWaypoints() {
     if (!this.#waypoints.length) {
       this.#renderNoEventsComponent();
       return;
@@ -58,11 +62,12 @@ export default class EventPresenter {
   }
 
   #renderWaypointPresenter(waypoint) {
-    new WaypointPresenter({
+    const waypointPresenter = new WaypointPresenter({
       waypointsContainerEl: this.#eventsListComponent.element,
       destinations: this.#destinations,
       offers: this.#offers,
-      waypoint,
-    }).init();
+    });
+
+    waypointPresenter.init(waypoint);
   }
 }
