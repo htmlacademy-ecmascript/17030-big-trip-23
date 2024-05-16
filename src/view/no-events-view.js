@@ -12,7 +12,7 @@ const createEmptyEventsTemplate = (activeFilter) => (
   `<p class="trip-events__msg">${EmptyEventsMessage[activeFilter]}</p>`
 );
 
-export default class EmptyEventsView extends AbstractView {
+export default class NoEventsView extends AbstractView {
   #activeFilter = null;
 
   constructor({ activeFilter }) {

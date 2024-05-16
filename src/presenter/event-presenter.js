@@ -1,7 +1,7 @@
 import { render } from '../framework/render';
 import EventsListView from '../view/events-list-view';
 import SortingView from '../view/sorting-view';
-import EmptyEventsView from '../view/empty-events-view';
+import NoEventsView from '../view/no-events-view';
 import FailedLoadView from '../view/failed-load-view';
 import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
@@ -39,7 +39,7 @@ export default class EventPresenter {
     render(this.#eventsListComponent, this.#containerEl);
 
     if (!this.#waypoints.length) {
-      this.#renderEmptyEventComponent();
+      this.#renderNoEventsComponent();
       return;
     }
 
@@ -52,8 +52,8 @@ export default class EventPresenter {
     }
   }
 
-  #renderEmptyEventComponent() {
-    const emptyEventsComponent = new EmptyEventsView({ activeFilter: this.#activeFilter });
+  #renderNoEventsComponent() {
+    const emptyEventsComponent = new NoEventsView({ activeFilter: this.#activeFilter });
     render(emptyEventsComponent, this.#containerEl);
   }
 
