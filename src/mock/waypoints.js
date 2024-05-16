@@ -1,9 +1,9 @@
 import { WaypointEventType } from '../const';
 import { getRandomArrayItem } from '../utils/common';
+import { nanoid } from 'nanoid';
 
 const mockWaypoints = [
   {
-    id: '1',
     basePrice: 1110,
     dateFrom: '2023-03-18T10:30:00.000Z',
     dateTo: '2023-03-18T11:30:00.000Z',
@@ -13,7 +13,6 @@ const mockWaypoints = [
     type: WaypointEventType.TAXI,
   },
   {
-    id: '2',
     type: WaypointEventType.TAXI,
     dateFrom: '2023-03-18T10:30:00.000Z',
     dateTo: '2023-03-18T11:00:00.000Z',
@@ -23,7 +22,6 @@ const mockWaypoints = [
     destination: '1',
   },
   {
-    id: '3',
     type: WaypointEventType.BUS,
     dateFrom: '2023-08-06T12:25:00.000Z',
     dateTo: '2023-08-08T13:35:00.000Z',
@@ -33,7 +31,6 @@ const mockWaypoints = [
     destination: '2',
   },
   {
-    id: '4',
     type: WaypointEventType.RESTAURANT,
     dateFrom: '2023-05-01T12:25:00.000Z',
     dateTo: '2023-05-01T13:35:00.000Z',
@@ -44,6 +41,9 @@ const mockWaypoints = [
   },
 ];
 
-const getRandomWaypoint = () => getRandomArrayItem(mockWaypoints);
+const getRandomWaypoint = () => ({
+  id: nanoid(),
+  ...getRandomArrayItem(mockWaypoints)
+});
 
 export { getRandomWaypoint };
