@@ -7,6 +7,8 @@ import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
 
 export default class EventPresenter {
+  #waypointPresenters = new Map();
+
   #containerEl = null;
   #waypointsModel = null;
   #destinationsModel = null;
@@ -69,5 +71,6 @@ export default class EventPresenter {
     });
 
     waypointPresenter.init(waypoint);
+    this.#waypointPresenters.set(waypoint.id, waypointPresenter);
   }
 }
