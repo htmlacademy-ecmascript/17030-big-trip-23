@@ -60,8 +60,8 @@ export default class TripPresenter {
   }
 
   #renderNoEventsComponent() {
-    const emptyEventsComponent = new NoEventsView({ activeFilter: this.#activeFilter });
-    render(emptyEventsComponent, this.#containerEl);
+    const noEventsComponent = new NoEventsView({ activeFilter: this.#activeFilter });
+    render(noEventsComponent, this.#containerEl);
   }
 
   #renderWaypointPresenter(waypoint) {
