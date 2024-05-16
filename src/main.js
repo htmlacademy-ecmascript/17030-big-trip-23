@@ -1,4 +1,4 @@
-import EventPresenter from './presenter/event-presenter';
+import TripPresenter from './presenter/trip-presenter';
 import WaypointsModel from './model/waypoints-model';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
@@ -21,7 +21,7 @@ const headerPresenter = new HeaderPresenter({
   activeFilter,
 });
 
-const eventPresenter = new EventPresenter({
+const tripPresenter = new TripPresenter({
   containerEl: tripEventsEl,
   waypointsModel,
   destinationsModel,
@@ -30,4 +30,4 @@ const eventPresenter = new EventPresenter({
 });
 
 headerPresenter.init();
-eventPresenter.init();
+tripPresenter.init();

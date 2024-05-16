@@ -7,7 +7,7 @@ import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
 import { updateWaypoint } from '../utils/waypoint';
 
-export default class EventPresenter {
+export default class TripPresenter {
   #waypointPresenters = new Map();
 
   #containerEl = null;
