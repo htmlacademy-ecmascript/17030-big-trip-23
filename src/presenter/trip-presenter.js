@@ -70,11 +70,16 @@ export default class TripPresenter {
       destinations: this.#destinations,
       offers: this.#offers,
       onDataChange: this.#handleWaypointChange,
+      onModeChange: this.#handleModeChange,
     });
 
     waypointPresenter.init(waypoint);
     this.#waypointPresenters.set(waypoint.id, waypointPresenter);
   }
+
+  #handleModeChange = () => {
+    this.#waypointPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #handleWaypointChange = (updatedWaypoint) => {
     updateWaypoint(this.#waypoints, updatedWaypoint);

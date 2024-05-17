@@ -2,6 +2,11 @@ import WaypointView from '../view/waypoint-view';
 import WaypointEditView from '../view/waypoint-edit-view';
 import { remove, render, replace } from '../framework/render';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class WaypointPresenter {
   #waypointsContainerEl = null;
   #destinations = [];
@@ -10,12 +15,15 @@ export default class WaypointPresenter {
   #waypointComponent = null;
   #waypointEditComponent = null;
   #handleDataChange = null;
+  #handleModeChange = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({ waypointsContainerEl, destinations, offers, onDataChange }) {
+  constructor({ waypointsContainerEl, destinations, offers, onDataChange, onModeChange }) {
     this.#waypointsContainerEl = waypointsContainerEl;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(waypoint) {
@@ -45,11 +53,11 @@ export default class WaypointPresenter {
       return;
     }
 
-    if (this.#waypointsContainerEl.contains(prevWaypointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#waypointComponent, prevWaypointComponent);
     }
 
-    if (this.#waypointsContainerEl.contains(prevWaypointEditComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#waypointEditComponent, prevWaypointEditComponent);
     }
 
@@ -57,9 +65,15 @@ export default class WaypointPresenter {
     remove(prevWaypointEditComponent);
   }
 
-  #destroy() {
+  destroy() {
     remove(this.#waypointComponent);
     remove(this.#waypointEditComponent);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceEditedWaypointToWaypoint();
+    }
   }
 
   #escKeydownHandler = (evt) => {
@@ -92,10 +106,13 @@ export default class WaypointPresenter {
   #replaceWaypointToEditedWaypoint = () => {
     replace(this.#waypointEditComponent, this.#waypointComponent);
     document.addEventListener('keydown', this.#escKeydownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   };
 
   #replaceEditedWaypointToWaypoint = () => {
     replace(this.#waypointComponent, this.#waypointEditComponent);
     document.removeEventListener('keydown', this.#escKeydownHandler);
+    this.#mode = Mode.DEFAULT;
   };
 }
