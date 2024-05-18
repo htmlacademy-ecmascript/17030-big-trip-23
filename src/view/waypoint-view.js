@@ -70,15 +70,24 @@ export default class WaypointView extends AbstractView {
   #destinations = [];
   #offers = [];
   #handleBtnUnfoldClick = null;
+  #handleBtnAddToFavoriteClick = null;
 
-  constructor({ waypoint, destinations, offers, onBtnUnfoldClick }) {
+  constructor({
+    waypoint,
+    destinations,
+    offers,
+    onBtnUnfoldClick,
+    onBtnAddToFavoriteClick,
+  }) {
     super();
     this.#waypoint = waypoint;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleBtnUnfoldClick = onBtnUnfoldClick;
+    this.#handleBtnAddToFavoriteClick = onBtnAddToFavoriteClick;
 
-    this.element.addEventListener('click', this.#btnUnfoldClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnUnfoldClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#btnAddToFavoriteClickHandler);
   }
 
   get template() {
@@ -92,5 +101,10 @@ export default class WaypointView extends AbstractView {
   #btnUnfoldClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleBtnUnfoldClick();
+  };
+
+  #btnAddToFavoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleBtnAddToFavoriteClick();
   };
 }
