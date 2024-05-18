@@ -20,12 +20,16 @@ const humanizeDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
 
 const humanizeDate = (date) => date ? dayjs(date).format(DATE_FORMAT) : '';
 
-const printDuration = (start, end) => {
+const getDiffDuration = (start, end) => {
   const dateStart = dayjs(start);
   const dateEnd = dayjs(end);
-
   const diff = dateEnd.diff(dateStart);
-  const diffDuration = dayjs.duration(diff);
+
+  return dayjs.duration(diff);
+};
+
+const printDuration = (start, end) => {
+  const diffDuration = getDiffDuration(start, end);
 
   const daysDuration = diffDuration.days();
   const hoursDuration = diffDuration.hours();
@@ -54,6 +58,15 @@ const isEventInFuture = (event) => dayjs().isAfter(event.dateFrom);
 
 const updateWaypoint = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
+const sortByPrice = (a, b) => b.basePrice - a.basePrice;
+
+const sortByTime = (a, b) => {
+  const durationA = getDiffDuration(a.dateFrom, a.dateTo);
+  const durationB = getDiffDuration(b.dateFrom, b.dateTo);
+
+  return durationB.asSeconds() - durationA.asSeconds();
+};
+
 export {
   getDateStringFromDate,
   getTimeStringFromDate,
@@ -64,4 +77,6 @@ export {
   isEventInPresent,
   isEventInFuture,
   updateWaypoint,
+  sortByPrice,
+  sortByTime,
 };
