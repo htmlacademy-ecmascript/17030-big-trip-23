@@ -98,6 +98,7 @@ export default class TripPresenter {
       case SortType.DAY:
         this.#waypoints = [...this.#sourcedWaypoints];
         break;
+
       case SortType.TIME:
         this.#waypoints.sort(sortByTime);
         break;
@@ -106,9 +107,13 @@ export default class TripPresenter {
         this.#waypoints.sort(sortByPrice);
         break;
 
+      // TODO: Сортировка по этим типам не требуется
       case SortType.EVENT:
       case SortType.OFFER:
         return;
+
+      default:
+        this.#waypoints = [...this.#sourcedWaypoints];
     }
 
     this.#currentSortType = sortType;
