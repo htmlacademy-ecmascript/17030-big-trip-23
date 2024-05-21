@@ -13,34 +13,39 @@ const BLANK_WAYPOINT = {
   destination: null,
 };
 
-const createWaypointTypeTemplate = (eventType) => {
+const createWaypointTypeTemplate = (eventType, waypointId) => {
+  const matchingString = `event-type-${eventType}-${waypointId}`;
   const label = capitaliseFirstLetter(eventType);
 
   return (
     `<div class="event__type-item">
-      <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
-      <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${label}</label>
+      <input id="${matchingString}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
+      <label class="event__type-label  event__type-label--${eventType}" for="${matchingString}">${label}</label>
     </div>`
   );
 };
 
-const createWaypointTypeSelectTemplate = (type) => (
-  `<div class="event__type-wrapper">
-    <label class="event__type  event__type-btn" for="event-type-toggle-1">
-      <span class="visually-hidden">Choose event type</span>
-      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
-    </label>
-    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+const createWaypointTypeSelectTemplate = (type, waypointId) => {
+  const matchingString = `event-type-toggle-${waypointId}`;
 
-    <div class="event__type-list">
-      <fieldset class="event__type-group">
-        <legend class="visually-hidden">Event type</legend>
+  return (
+    `<div class="event__type-wrapper">
+      <label class="event__type  event__type-btn" for="${matchingString}">
+        <span class="visually-hidden">Choose event type</span>
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+      </label>
+      <input class="event__type-toggle  visually-hidden" id="${matchingString}" type="checkbox">
 
-        ${Object.values(WaypointEventType).map(createWaypointTypeTemplate).join('')}
-      </fieldset>
-    </div>
-  </div>`
-);
+      <div class="event__type-list">
+        <fieldset class="event__type-group">
+          <legend class="visually-hidden">Event type</legend>
+
+          ${Object.values(WaypointEventType).map((eventType) => createWaypointTypeTemplate(eventType, waypointId)).join('')}
+        </fieldset>
+      </div>
+    </div>`
+  );
+};
 
 const createDestinationOptionTemplate = (name) => (
   `<option value="${name}"></option>`
@@ -48,13 +53,14 @@ const createDestinationOptionTemplate = (name) => (
 
 const createDestinationSelectTemplate = (type, destination, destinations) => {
   const { id = '', name = '' } = destination;
+  const matchingString = `event-destination-${id}`;
 
   return (
     `<div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="event-destination-1">
+      <label class="event__label  event__type-output" for="${matchingString}">
         ${capitaliseFirstLetter(type)}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
+      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
       <datalist id="destination-list-${id}">
         ${destinations.map((it) => createDestinationOptionTemplate(it.name)).join('')}
       </datalist>
@@ -121,6 +127,7 @@ const createDestinationDescriptionTemplate = (destination) => {
 
 const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
   const {
+    id,
     type,
     dateFrom,
     dateTo,
@@ -136,7 +143,7 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
     `<li class="trip-events__item">
         <form class="event event--edit" action="#" method="post">
           <header class="event__header">
-            ${createWaypointTypeSelectTemplate(type)}
+            ${createWaypointTypeSelectTemplate(type, id)}
 
             ${createDestinationSelectTemplate(type, pointDestination, destinations)}
 
