@@ -4,13 +4,13 @@ import { nanoid } from 'nanoid';
 
 const mockWaypoints = [
   {
-    basePrice: 1110,
+    type: WaypointEventType.TAXI,
     dateFrom: '2023-03-18T10:30:00.000Z',
     dateTo: '2023-03-18T11:30:00.000Z',
-    destination: '2',
+    basePrice: 1110,
     isFavorite: false,
     offers: ['4', '6'],
-    type: WaypointEventType.TAXI,
+    destination: '2',
   },
   {
     type: WaypointEventType.TAXI,
