@@ -1,7 +1,8 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { WaypointEventType } from '../const';
 import { humanizeDate } from '../utils/waypoint';
 import { capitaliseFirstLetter } from '../utils/common';
+import { getDestinationIdByName } from '../mock/destinations';
 
 const BLANK_WAYPOINT = {
   type: WaypointEventType.FLIGHT,
@@ -51,17 +52,18 @@ const createDestinationOptionTemplate = (name) => (
   `<option value="${name}"></option>`
 );
 
-const createDestinationSelectTemplate = (type, destination, destinations) => {
-  const { id = '', name = '' } = destination;
-  const matchingString = `event-destination-${id}`;
+const createDestinationSelectTemplate = ({ type, destination, destinations, waypointId }) => {
+  const { name = '' } = destination;
+  const matchingString = `event-destination-${waypointId}`;
+  const listMatchingString = `destination-list-${waypointId}`;
 
   return (
     `<div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="${matchingString}">
         ${capitaliseFirstLetter(type)}
       </label>
-      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
-      <datalist id="destination-list-${id}">
+      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${name}" list="${listMatchingString}">
+      <datalist id="${listMatchingString}">
         ${destinations.map((it) => createDestinationOptionTemplate(it.name)).join('')}
       </datalist>
     </div>`
@@ -136,8 +138,8 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
     destination,
   } = waypoint;
 
-  const pointTypeOffers = offers.find((offer) => offer.type === type).offers;
-  const pointDestination = destinations.find(({ id }) => id === destination) || {};
+  const pointTypeOffers = offers.find((offer) => offer.type === type)?.offers || [];
+  const pointDestination = destinations.find(({ id: destinationId }) => destinationId === destination) || {};
 
   return (
     `<li class="trip-events__item">
@@ -145,7 +147,7 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
           <header class="event__header">
             ${createWaypointTypeSelectTemplate(type, id)}
 
-            ${createDestinationSelectTemplate(type, pointDestination, destinations)}
+            ${createDestinationSelectTemplate({ type, destination: pointDestination, destinations, waypointId: id })}
 
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -179,8 +181,7 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
   );
 };
 
-export default class WaypointEditView extends AbstractView {
-  #waypoint = null;
+export default class WaypointEditView extends AbstractStatefulView {
   #destinations = [];
   #offers = [];
   #handleBtnFoldClick = null;
@@ -189,23 +190,19 @@ export default class WaypointEditView extends AbstractView {
 
   constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onReset }) {
     super();
-    this.#waypoint = waypoint;
+    this._setState(WaypointEditView.parseWaypointToState(waypoint));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleBtnFoldClick = onBtnFoldClick;
     this.#handleSubmit = onSubmit;
     this.#handleReset = onReset;
 
-    const formEl = this.element.querySelector('.event--edit');
-
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
-    formEl.addEventListener('submit', this.#formSubmitHandler);
-    formEl.addEventListener('reset', this.#formResetHandler);
+    this._restoreHandlers();
   }
 
   get template() {
     return createWaypointEditTemplate({
-      waypoint: this.#waypoint,
+      waypoint: this._state,
       destinations: this.#destinations,
       offers: this.#offers,
     });
@@ -218,11 +215,40 @@ export default class WaypointEditView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleSubmit();
+    this.#handleSubmit(WaypointEditView.parseStateToWaypoint(this._state));
   };
 
   #formResetHandler = (evt) => {
     evt.preventDefault();
     this.#handleReset();
   };
+
+  #typeChangeHandler = (evt) => {
+    const type = evt.target.value;
+    this.updateElement({ type });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    const destinationName = evt.target.value;
+    const destination = getDestinationIdByName(destinationName);
+    this.updateElement({ destination });
+  };
+
+  _restoreHandlers() {
+    const formEl = this.element.querySelector('.event--edit');
+
+    formEl.addEventListener('submit', this.#formSubmitHandler);
+    formEl.addEventListener('reset', this.#formResetHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
+  }
+
+  static parseWaypointToState(waypoint) {
+    return { ...waypoint };
+  }
+
+  static parseStateToWaypoint(state) {
+    return { ...state };
+  }
 }

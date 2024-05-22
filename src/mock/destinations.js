@@ -47,4 +47,6 @@ const mockDestinations = [
 
 const getDestinations = () => mockDestinations;
 
-export { getDestinations };
+const getDestinationIdByName = (destinationName) => mockDestinations.find(({ name }) => name === destinationName)?.id ?? null;
+
+export { getDestinations, getDestinationIdByName };

@@ -91,7 +91,8 @@ export default class WaypointPresenter {
     this.#replaceEditedWaypointToWaypoint();
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (waypoint) => {
+    this.#handleDataChange(waypoint);
     this.#replaceEditedWaypointToWaypoint();
   };
 

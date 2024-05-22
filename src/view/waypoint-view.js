@@ -25,7 +25,7 @@ const createWaypointView = ({ waypoint, destinations, offers }) => {
   const typeImageName = `${type.toLowerCase()}.png`;
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
   const pointDestination = destinations.find(({ id }) => id === destination) || {};
-  const pointTypeOffers = offers.find((offer) => offer.type === type).offers;
+  const pointTypeOffers = offers.find((offer) => offer.type === type)?.offers || [];
   const selectedOffers = pointTypeOffers.filter(({ id }) => offerIds.includes(id));
 
   return (
