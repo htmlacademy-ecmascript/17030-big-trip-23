@@ -213,6 +213,20 @@ export default class WaypointEditView extends AbstractStatefulView {
     });
   }
 
+  reset(waypoint) {
+    this.updateElement(WaypointEditView.parseWaypointToState(waypoint));
+  }
+
+  _restoreHandlers() {
+    const formEl = this.element.querySelector('.event--edit');
+
+    formEl.addEventListener('submit', this.#formSubmitHandler);
+    formEl.addEventListener('reset', this.#formResetHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
+  }
+
   #btnFoldClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleBtnFoldClick();
@@ -238,16 +252,6 @@ export default class WaypointEditView extends AbstractStatefulView {
     const destination = getDestinationIdByName(destinationName);
     this.updateElement({ destination });
   };
-
-  _restoreHandlers() {
-    const formEl = this.element.querySelector('.event--edit');
-
-    formEl.addEventListener('submit', this.#formSubmitHandler);
-    formEl.addEventListener('reset', this.#formResetHandler);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
-  }
 
   static parseWaypointToState(waypoint) {
     return { ...waypoint };
