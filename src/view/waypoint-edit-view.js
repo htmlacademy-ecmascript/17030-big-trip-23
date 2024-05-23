@@ -14,34 +14,39 @@ const BLANK_WAYPOINT = {
   destination: null,
 };
 
-const createWaypointTypeTemplate = (eventType, waypointId) => {
+const createWaypointTypeTemplate = ({ eventType, pickedType, waypointId }) => {
   const matchingString = `event-type-${eventType}-${waypointId}`;
   const label = capitaliseFirstLetter(eventType);
+  const isCheckedAttrActive = eventType === pickedType ? 'checked' : '';
 
   return (
     `<div class="event__type-item">
-      <input id="${matchingString}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
+      <input id="${matchingString}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${isCheckedAttrActive}>
       <label class="event__type-label  event__type-label--${eventType}" for="${matchingString}">${label}</label>
     </div>`
   );
 };
 
-const createWaypointTypeSelectTemplate = (type, waypointId) => {
+const createWaypointTypeSelectTemplate = (pickedType, waypointId) => {
   const matchingString = `event-type-toggle-${waypointId}`;
+  const waypointTypesTemplate = Object.values(WaypointEventType).map((eventType) => createWaypointTypeTemplate({
+    eventType,
+    pickedType,
+    waypointId,
+  })).join('');
 
   return (
     `<div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="${matchingString}">
         <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${pickedType}.png" alt="Event type icon">
       </label>
       <input class="event__type-toggle  visually-hidden" id="${matchingString}" type="checkbox">
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
-
-          ${Object.values(WaypointEventType).map((eventType) => createWaypointTypeTemplate(eventType, waypointId)).join('')}
+          ${waypointTypesTemplate}
         </fieldset>
       </div>
     </div>`
