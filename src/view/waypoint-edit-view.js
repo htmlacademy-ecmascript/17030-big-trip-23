@@ -3,6 +3,9 @@ import { WaypointEventType } from '../const';
 import { humanizeDate } from '../utils/waypoint';
 import { capitaliseFirstLetter } from '../utils/common';
 import { getDestinationIdByName } from '../mock/destinations';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_WAYPOINT = {
   type: WaypointEventType.FLIGHT,
