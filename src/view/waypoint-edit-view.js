@@ -148,6 +148,9 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
 
   const pointTypeOffers = offers.find((offer) => offer.type === type)?.offers || [];
   const pointDestination = destinations.find(({ id: destinationId }) => destinationId === destination) || {};
+  const eventStartTimeMatchingAttValue = `event-start-time-${id}`;
+  const eventEndTimeMatchingAttValue = `event-end-time-${id}`;
+  const eventPriceMatchingAttValue = `event-price-${id}`;
 
   return (
     `<li class="trip-events__item">
@@ -158,19 +161,19 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
             ${createDestinationSelectTemplate({ type, destination: pointDestination, destinations, waypointId: id })}
 
             <div class="event__field-group  event__field-group--time">
-              <label class="visually-hidden" for="event-start-time-1">From</label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}">
+              <label class="visually-hidden" for="${eventStartTimeMatchingAttValue}">From</label>
+              <input class="event__input  event__input--time" id="${eventStartTimeMatchingAttValue}" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}">
               &mdash;
-              <label class="visually-hidden" for="event-end-time-1">To</label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dateTo)}">
+              <label class="visually-hidden" for="${eventEndTimeMatchingAttValue}">To</label>
+              <input class="event__input  event__input--time" id="${eventEndTimeMatchingAttValue}" type="text" name="event-end-time" value="${humanizeDate(dateTo)}">
             </div>
 
             <div class="event__field-group  event__field-group--price">
-              <label class="event__label" for="event-price-1">
+              <label class="event__label" for="${eventPriceMatchingAttValue}">
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+              <input class="event__input  event__input--price" id="${eventPriceMatchingAttValue}" type="text" name="event-price" value="${basePrice}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
