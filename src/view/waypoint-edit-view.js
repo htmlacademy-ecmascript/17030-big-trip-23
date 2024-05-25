@@ -198,6 +198,8 @@ export default class WaypointEditView extends AbstractStatefulView {
   #handleBtnFoldClick = null;
   #handleSubmit = null;
   #handleReset = null;
+  #eventStartDatepicker = null;
+  #eventEndDatepicker = null;
 
   constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onReset }) {
     super();
@@ -223,14 +225,29 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.updateElement(WaypointEditView.parseWaypointToState(waypoint));
   }
 
-  _restoreHandlers() {
-    const formEl = this.element.querySelector('.event--edit');
+  removeElement() {
+    super.removeElement();
 
-    formEl.addEventListener('submit', this.#formSubmitHandler);
-    formEl.addEventListener('reset', this.#formResetHandler);
+    if (this.#eventStartDatepicker) {
+      this.#eventStartDatepicker.destroy();
+      this.#eventStartDatepicker = null;
+    }
+
+    if (this.#eventEndDatepicker) {
+      this.#eventEndDatepicker.destroy();
+      this.#eventEndDatepicker = null;
+    }
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event--edit').addEventListener('reset', this.#formResetHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
+
+    this.#setEventStartDatepicker();
+    this.#setEventEndDatepicker();
   }
 
   #btnFoldClickHandler = (evt) => {
@@ -258,6 +275,42 @@ export default class WaypointEditView extends AbstractStatefulView {
     const destination = getDestinationIdByName(destinationName);
     this.updateElement({ destination });
   };
+
+  #eventStartDatepickerCloseHandler = ([newDate]) => {
+    this.updateElement({
+      dateFrom: newDate,
+    });
+  };
+
+  #eventEndDatepickerCloseHandler = ([newDate]) => {
+    this.updateElement({
+      dateTo: newDate,
+    });
+  };
+
+  #setEventStartDatepicker() {
+    this.#eventStartDatepicker = flatpickr(
+      this.element.querySelector('[name="event-start-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateFrom,
+        onClose: this.#eventStartDatepickerCloseHandler,
+      },
+    );
+  }
+
+  #setEventEndDatepicker() {
+    this.#eventStartDatepicker = flatpickr(
+      this.element.querySelector('[name="event-end-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        onClose: this.#eventEndDatepickerCloseHandler,
+      },
+    );
+  }
 
   static parseWaypointToState(waypoint) {
     return { ...waypoint };
