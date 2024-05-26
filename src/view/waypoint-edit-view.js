@@ -3,6 +3,9 @@ import { WaypointEventType } from '../const';
 import { humanizeDate } from '../utils/waypoint';
 import { capitaliseFirstLetter } from '../utils/common';
 import { getDestinationIdByName } from '../mock/destinations';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_WAYPOINT = {
   type: WaypointEventType.FLIGHT,
@@ -145,6 +148,9 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
 
   const pointTypeOffers = offers.find((offer) => offer.type === type)?.offers || [];
   const pointDestination = destinations.find(({ id: destinationId }) => destinationId === destination) || {};
+  const eventStartTimeMatchingAttValue = `event-start-time-${id}`;
+  const eventEndTimeMatchingAttValue = `event-end-time-${id}`;
+  const eventPriceMatchingAttValue = `event-price-${id}`;
 
   return (
     `<li class="trip-events__item">
@@ -155,19 +161,19 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
             ${createDestinationSelectTemplate({ type, destination: pointDestination, destinations, waypointId: id })}
 
             <div class="event__field-group  event__field-group--time">
-              <label class="visually-hidden" for="event-start-time-1">From</label>
-              <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}">
+              <label class="visually-hidden" for="${eventStartTimeMatchingAttValue}">From</label>
+              <input class="event__input  event__input--time" id="${eventStartTimeMatchingAttValue}" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}">
               &mdash;
-              <label class="visually-hidden" for="event-end-time-1">To</label>
-              <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dateTo)}">
+              <label class="visually-hidden" for="${eventEndTimeMatchingAttValue}">To</label>
+              <input class="event__input  event__input--time" id="${eventEndTimeMatchingAttValue}" type="text" name="event-end-time" value="${humanizeDate(dateTo)}">
             </div>
 
             <div class="event__field-group  event__field-group--price">
-              <label class="event__label" for="event-price-1">
+              <label class="event__label" for="${eventPriceMatchingAttValue}">
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+              <input class="event__input  event__input--price" id="${eventPriceMatchingAttValue}" type="text" name="event-price" value="${basePrice}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -192,6 +198,8 @@ export default class WaypointEditView extends AbstractStatefulView {
   #handleBtnFoldClick = null;
   #handleSubmit = null;
   #handleReset = null;
+  #eventStartDatepicker = null;
+  #eventEndDatepicker = null;
 
   constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onReset }) {
     super();
@@ -217,14 +225,29 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.updateElement(WaypointEditView.parseWaypointToState(waypoint));
   }
 
-  _restoreHandlers() {
-    const formEl = this.element.querySelector('.event--edit');
+  removeElement() {
+    super.removeElement();
 
-    formEl.addEventListener('submit', this.#formSubmitHandler);
-    formEl.addEventListener('reset', this.#formResetHandler);
+    if (this.#eventStartDatepicker) {
+      this.#eventStartDatepicker.destroy();
+      this.#eventStartDatepicker = null;
+    }
+
+    if (this.#eventEndDatepicker) {
+      this.#eventEndDatepicker.destroy();
+      this.#eventEndDatepicker = null;
+    }
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event--edit').addEventListener('reset', this.#formResetHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
+
+    this.#setEventStartDatepicker();
+    this.#setEventEndDatepicker();
   }
 
   #btnFoldClickHandler = (evt) => {
@@ -252,6 +275,42 @@ export default class WaypointEditView extends AbstractStatefulView {
     const destination = getDestinationIdByName(destinationName);
     this.updateElement({ destination });
   };
+
+  #eventStartDatepickerCloseHandler = ([newDate]) => {
+    this.updateElement({
+      dateFrom: newDate,
+    });
+  };
+
+  #eventEndDatepickerCloseHandler = ([newDate]) => {
+    this.updateElement({
+      dateTo: newDate,
+    });
+  };
+
+  #setEventStartDatepicker() {
+    this.#eventStartDatepicker = flatpickr(
+      this.element.querySelector('[name="event-start-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateFrom,
+        onClose: this.#eventStartDatepickerCloseHandler,
+      },
+    );
+  }
+
+  #setEventEndDatepicker() {
+    this.#eventStartDatepicker = flatpickr(
+      this.element.querySelector('[name="event-end-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        onClose: this.#eventEndDatepickerCloseHandler,
+      },
+    );
+  }
 
   static parseWaypointToState(waypoint) {
     return { ...waypoint };
