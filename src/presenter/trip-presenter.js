@@ -5,7 +5,7 @@ import NoEventsView from '../view/no-events-view';
 import FailedLoadView from '../view/failed-load-view';
 import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
-import { sortByPrice, sortByTime, updateWaypoint } from '../utils/waypoint';
+import { sortByPrice, sortByTime } from '../utils/waypoint';
 import { SortType } from '../const';
 
 export default class TripPresenter {
@@ -22,8 +22,6 @@ export default class TripPresenter {
   #failedLoadComponent = new FailedLoadView();
   #loadingComponent = new LoadingView();
 
-  #waypoints = [];
-  #sourcedWaypoints = [];
   #destinations = [];
   #offers = [];
   #currentSortType = SortType.DAY;
@@ -36,9 +34,26 @@ export default class TripPresenter {
     this.#activeFilter = activeFilter;
   }
 
+  get waypoints() {
+    switch (this.#currentSortType) {
+      case SortType.DAY:
+        return this.#waypointsModel.waypoints;
+
+      case SortType.TIME:
+        return [...this.#waypointsModel.waypoints].sort(sortByTime);
+
+      case SortType.PRICE:
+        return [...this.#waypointsModel.waypoints].sort(sortByPrice);
+
+      // TODO: Сортировка по этим типам не требуется
+      case SortType.EVENT:
+      case SortType.OFFER:
+      default:
+        return this.#waypointsModel.waypoints;
+    }
+  }
+
   init() {
-    this.#waypoints = [...this.#waypointsModel.waypoints];
-    this.#sourcedWaypoints = [...this.#waypointsModel.waypoints];
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
 
@@ -56,7 +71,7 @@ export default class TripPresenter {
   }
 
   #renderWaypoints() {
-    if (!this.#waypoints.length) {
+    if (!this.waypoints.length) {
       this.#renderNoEventsComponent();
       return;
     }
@@ -70,8 +85,8 @@ export default class TripPresenter {
   }
 
   #renderWaypointsList() {
-    for (let i = 0; i < this.#waypoints.length; i++) {
-      this.#renderWaypointPresenter(this.#waypoints[i]);
+    for (let i = 0; i < this.waypoints.length; i++) {
+      this.#renderWaypointPresenter(this.waypoints[i]);
     }
   }
 
@@ -93,39 +108,12 @@ export default class TripPresenter {
     this.#waypointPresenters.set(waypoint.id, waypointPresenter);
   }
 
-  #sortWaypoints(sortType) {
-    switch (sortType) {
-      case SortType.DAY:
-        this.#waypoints = [...this.#sourcedWaypoints];
-        break;
-
-      case SortType.TIME:
-        this.#waypoints.sort(sortByTime);
-        break;
-
-      case SortType.PRICE:
-        this.#waypoints.sort(sortByPrice);
-        break;
-
-      // TODO: Сортировка по этим типам не требуется
-      case SortType.EVENT:
-      case SortType.OFFER:
-        return;
-
-      default:
-        this.#waypoints = [...this.#sourcedWaypoints];
-    }
-
-    this.#currentSortType = sortType;
-  }
-
   #handleModeChange = () => {
     this.#waypointPresenters.forEach((presenter) => presenter.resetView());
   };
 
   #handleWaypointChange = (updatedWaypoint) => {
-    this.#waypoints = updateWaypoint(this.#waypoints, updatedWaypoint);
-    this.#sourcedWaypoints = updateWaypoint(this.#sourcedWaypoints, updatedWaypoint);
+    // Здесь будем вызывать обновление модели
     this.#waypointPresenters.get(updatedWaypoint.id).init(updatedWaypoint);
   };
 
@@ -134,7 +122,7 @@ export default class TripPresenter {
       return;
     }
 
-    this.#sortWaypoints(sortType);
+    this.#currentSortType = sortType;
     this.#clearWaypointsList();
     this.#renderWaypointsList();
   };
