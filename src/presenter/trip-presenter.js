@@ -32,6 +32,8 @@ export default class TripPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#activeFilter = activeFilter;
+
+    this.#waypointsModel.addObserver(this.#handleModelEvent);
   }
 
   get waypoints() {
@@ -100,7 +102,7 @@ export default class TripPresenter {
       waypointsContainerEl: this.#eventsListComponent.element,
       destinations: this.#destinations,
       offers: this.#offers,
-      onDataChange: this.#handleWaypointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
 
@@ -112,9 +114,20 @@ export default class TripPresenter {
     this.#waypointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleWaypointChange = (updatedWaypoint) => {
-    // Здесь будем вызывать обновление модели
-    this.#waypointPresenters.get(updatedWaypoint.id).init(updatedWaypoint);
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  };
+
+  #handleModelEvent = (updateType, update) => {
+    console.log(updateType, update);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   };
 
   #handleSortTypeChange = (sortType) => {
