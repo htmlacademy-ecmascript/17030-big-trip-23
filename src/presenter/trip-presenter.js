@@ -1,4 +1,4 @@
-import { render } from '../framework/render';
+import { remove, render } from '../framework/render';
 import EventsListView from '../view/events-list-view';
 import SortingView from '../view/sorting-view';
 import NoEventsView from '../view/no-events-view';
@@ -6,7 +6,7 @@ import FailedLoadView from '../view/failed-load-view';
 import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
 import { sortByPrice, sortByTime } from '../utils/waypoint';
-import { SortType } from '../const';
+import { SortType, UpdateType, UserAction } from '../const';
 
 export default class TripPresenter {
   #waypointPresenters = new Map();
@@ -18,6 +18,7 @@ export default class TripPresenter {
   #activeFilter = null;
 
   #sortingComponent = null;
+  #noEventsComponent = null;
   #eventsListComponent = new EventsListView();
   #failedLoadComponent = new FailedLoadView();
   #loadingComponent = new LoadingView();
@@ -59,42 +60,49 @@ export default class TripPresenter {
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
 
-    this.#renderSortingComponent();
-    render(this.#eventsListComponent, this.#containerEl);
-
-    this.#renderWaypoints();
+    this.#renderTrip();
   }
 
   #renderSortingComponent() {
     this.#sortingComponent = new SortingView({
+      currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange,
     });
     render(this.#sortingComponent, this.#containerEl);
   }
 
-  #renderWaypoints() {
+  #renderNoEventsComponent() {
+    this.#noEventsComponent = new NoEventsView({ activeFilter: this.#activeFilter });
+    render(this.#noEventsComponent, this.#containerEl);
+  }
+
+  #clearTrip({ resetSortType = false } = {}) {
+    this.#waypointPresenters.forEach((presenter) => presenter.destroy());
+    this.#waypointPresenters.clear();
+
+    remove(this.#noEventsComponent);
+    remove(this.#sortingComponent);
+    remove(this.#eventsListComponent);
+    remove(this.#failedLoadComponent);
+    remove(this.#loadingComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  }
+
+  #renderTrip() {
+    this.#renderSortingComponent();
+    render(this.#eventsListComponent, this.#containerEl);
+
     if (!this.waypoints.length) {
       this.#renderNoEventsComponent();
       return;
     }
 
-    this.#renderWaypointsList();
-  }
-
-  #clearWaypointsList() {
-    this.#waypointPresenters.forEach((presenter) => presenter.destroy());
-    this.#waypointPresenters.clear();
-  }
-
-  #renderWaypointsList() {
     for (let i = 0; i < this.waypoints.length; i++) {
       this.#renderWaypointPresenter(this.waypoints[i]);
     }
-  }
-
-  #renderNoEventsComponent() {
-    const noEventsComponent = new NoEventsView({ activeFilter: this.#activeFilter });
-    render(noEventsComponent, this.#containerEl);
   }
 
   #renderWaypointPresenter(waypoint) {
@@ -115,19 +123,41 @@ export default class TripPresenter {
   };
 
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_WAYPOINT:
+        this.#waypointsModel.updateWaypoint(updateType, update);
+        break;
+      case UserAction.ADD_WAYPOINT:
+        this.#waypointsModel.addWaypoint(updateType, update);
+        break;
+      case UserAction.REMOVE_WAYPOINT:
+        this.#waypointsModel.removeWaypoint(updateType, update);
+        break;
+      default:
+        throw new Error(`Unknown action type: ${actionType}`);
+    }
   };
 
   #handleModelEvent = (updateType, update) => {
-    console.log(updateType, update);
     // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this.#waypointPresenters.get(update.id).init(update);
+        break;
+      case UpdateType.MINOR:
+        this.#clearTrip();
+        this.#renderTrip();
+        // - обновить список
+        break;
+      case UpdateType.MAJOR:
+        this.#clearTrip({ resetSortType: true });
+        this.#renderTrip();
+        // - обновить всю поездку (например, при переключении фильтра)
+        break;
+      default:
+        throw new Error(`Unknown update type: ${updateType}`);
+    }
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -136,7 +166,7 @@ export default class TripPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearWaypointsList();
-    this.#renderWaypointsList();
+    this.#clearTrip();
+    this.#renderTrip();
   };
 }
