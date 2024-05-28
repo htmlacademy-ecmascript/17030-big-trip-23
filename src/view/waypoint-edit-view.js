@@ -197,18 +197,18 @@ export default class WaypointEditView extends AbstractStatefulView {
   #offers = [];
   #handleBtnFoldClick = null;
   #handleSubmit = null;
-  #handleReset = null;
+  #handleRemove = null;
   #eventStartDatepicker = null;
   #eventEndDatepicker = null;
 
-  constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onReset }) {
+  constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onRemove }) {
     super();
     this._setState(WaypointEditView.parseWaypointToState(waypoint));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleBtnFoldClick = onBtnFoldClick;
     this.#handleSubmit = onSubmit;
-    this.#handleReset = onReset;
+    this.#handleRemove = onRemove;
 
     this._restoreHandlers();
   }
@@ -241,7 +241,7 @@ export default class WaypointEditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event--edit').addEventListener('reset', this.#formResetHandler);
+    this.element.querySelector('.event--edit').addEventListener('reset', this.#waypointRemoveHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
@@ -260,9 +260,9 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.#handleSubmit(WaypointEditView.parseStateToWaypoint(this._state));
   };
 
-  #formResetHandler = (evt) => {
+  #waypointRemoveHandler = (evt) => {
     evt.preventDefault();
-    this.#handleReset();
+    this.#handleRemove(WaypointEditView.parseStateToWaypoint(this._state));
   };
 
   #typeChangeHandler = (evt) => {

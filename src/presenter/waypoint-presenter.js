@@ -46,7 +46,7 @@ export default class WaypointPresenter {
       offers: this.#offers,
       onBtnFoldClick: this.#handleBtnFoldClick,
       onSubmit: this.#handleFormSubmit,
-      onReset: this.#handleFormReset,
+      onRemove: this.#handleWaypointRemove,
     });
 
     if (prevWaypointComponent === null || prevWaypointEditComponent === null) {
@@ -104,8 +104,12 @@ export default class WaypointPresenter {
     this.#replaceEditedWaypointToWaypoint();
   };
 
-  #handleFormReset = () => {
-    this.#replaceEditedWaypointToWaypoint();
+  #handleWaypointRemove = (waypoint) => {
+    this.#handleDataChange(
+      UserAction.REMOVE_WAYPOINT,
+      UpdateType.MINOR,
+      waypoint,
+    );
   };
 
   #handleFavoriteClick = () => {
