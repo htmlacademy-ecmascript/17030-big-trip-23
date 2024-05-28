@@ -5,7 +5,7 @@ import NoEventsView from '../view/no-events-view';
 import FailedLoadView from '../view/failed-load-view';
 import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
-import { sortByPrice, sortByTime } from '../utils/waypoint';
+import { sortByDay, sortByPrice, sortByTime } from '../utils/waypoint';
 import { SortType, UpdateType, UserAction } from '../const';
 
 export default class TripPresenter {
@@ -40,7 +40,7 @@ export default class TripPresenter {
   get waypoints() {
     switch (this.#currentSortType) {
       case SortType.DAY:
-        return this.#waypointsModel.waypoints;
+        return [...this.#waypointsModel.waypoints].sort(sortByDay);
 
       case SortType.TIME:
         return [...this.#waypointsModel.waypoints].sort(sortByTime);

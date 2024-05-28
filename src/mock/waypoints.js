@@ -14,8 +14,8 @@ const mockWaypoints = [
   },
   {
     type: WaypointEventType.TAXI,
-    dateFrom: '2023-03-18T10:30:00.000Z',
-    dateTo: '2023-03-18T11:00:00.000Z',
+    dateFrom: '2023-04-12T10:30:00.000Z',
+    dateTo: '2023-04-12T11:00:00.000Z',
     basePrice: 1200,
     isFavorite: true,
     offers: ['1', '2'],
