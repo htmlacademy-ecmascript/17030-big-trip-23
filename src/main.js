@@ -4,7 +4,6 @@ import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import FilterModel from './model/filter-model';
 import { FilterType } from './const';
-import { generateFilter } from './mock/filter';
 import HeaderPresenter from './presenter/header-presenter';
 
 const headerContainerEl = document.querySelector('.page-body');
@@ -15,7 +14,12 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filterModel = new FilterModel();
 const activeFilter = FilterType.EVERYTHING;
-const filters = generateFilter(waypointsModel.waypoints);
+const filters = [
+  {
+    type: FilterType.EVERYTHING,
+    hasItems: false,
+  },
+];
 
 const headerPresenter = new HeaderPresenter({
   containerEl: headerContainerEl,

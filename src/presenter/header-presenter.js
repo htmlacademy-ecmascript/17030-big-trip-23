@@ -12,11 +12,17 @@ export default class HeaderPresenter {
 
   constructor({ containerEl, filters, activeFilter }) {
     this.#headerComponent = new HeaderView();
-    this.#filterComponent = new FiltersView({ filters, activeFilter });
+    this.#filterComponent = new FiltersView({
+      filters,
+      activeFilter,
+      onFilterTypeChange: (filter) => {
+        console.log(filter);
+      },
+    });
     this.#newEventButtonComponent = new NewEventButtonView({
       onNewEventClick: () => {
         throw new Error('TODO: Написать код для клика по кнопке "New event"');
-      }
+      },
     });
 
     this.#containerElement = containerEl;
