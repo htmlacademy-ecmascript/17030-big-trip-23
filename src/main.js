@@ -3,7 +3,6 @@ import WaypointsModel from './model/waypoints-model';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import FilterModel from './model/filter-model';
-import { FilterType } from './const';
 import HeaderPresenter from './presenter/header-presenter';
 
 const headerContainerEl = document.querySelector('.page-body');
@@ -13,18 +12,11 @@ const waypointsModel = new WaypointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filterModel = new FilterModel();
-const activeFilter = FilterType.EVERYTHING;
-const filters = [
-  {
-    type: FilterType.EVERYTHING,
-    hasItems: false,
-  },
-];
 
 const headerPresenter = new HeaderPresenter({
   containerEl: headerContainerEl,
-  filters,
-  activeFilter,
+  filterModel,
+  waypointsModel,
 });
 
 const tripPresenter = new TripPresenter({
@@ -32,7 +24,7 @@ const tripPresenter = new TripPresenter({
   waypointsModel,
   destinationsModel,
   offersModel,
-  activeFilter,
+  filterModel,
 });
 
 headerPresenter.init();
