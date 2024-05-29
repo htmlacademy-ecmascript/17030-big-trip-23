@@ -89,11 +89,14 @@ export default class TripPresenter {
     this.#waypointPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointPresenters.clear();
 
-    remove(this.#noEventsComponent);
     remove(this.#sortingComponent);
     remove(this.#eventsListComponent);
     remove(this.#failedLoadComponent);
     remove(this.#loadingComponent);
+
+    if (this.#noEventsComponent) {
+      remove(this.#noEventsComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
