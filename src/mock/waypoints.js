@@ -23,8 +23,8 @@ const mockWaypoints = [
   },
   {
     type: WaypointEventType.BUS,
-    dateFrom: '2023-08-06T12:25:00.000Z',
-    dateTo: '2023-08-08T13:35:00.000Z',
+    dateFrom: '2024-08-06T12:25:00.000Z',
+    dateTo: '2024-08-08T13:35:00.000Z',
     basePrice: 769,
     isFavorite: false,
     offers: ['3', '4', '7'],

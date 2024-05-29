@@ -7,6 +7,7 @@ import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
 import { sortByDay, sortByPrice, sortByTime } from '../utils/waypoint';
 import { SortType, UpdateType, UserAction } from '../const';
+import { filter } from '../utils/filter';
 
 export default class TripPresenter {
   #waypointPresenters = new Map();
@@ -15,7 +16,7 @@ export default class TripPresenter {
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
-  #activeFilter = null;
+  #filterModel = null;
 
   #sortingComponent = null;
   #noEventsComponent = null;
@@ -27,32 +28,40 @@ export default class TripPresenter {
   #offers = [];
   #currentSortType = SortType.DAY;
 
-  constructor({ containerEl, waypointsModel, destinationsModel, offersModel, activeFilter }) {
+  constructor({ containerEl, waypointsModel, destinationsModel, offersModel, filterModel }) {
     this.#containerEl = containerEl;
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
-    this.#activeFilter = activeFilter;
+    this.#filterModel = filterModel;
 
     this.#waypointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  get #activeFilter() {
+    return this.#filterModel.filter;
   }
 
   get waypoints() {
+    const waypoints = this.#waypointsModel.waypoints;
+    const filteredWaypoints = filter[this.#activeFilter](waypoints);
+
     switch (this.#currentSortType) {
       case SortType.DAY:
-        return [...this.#waypointsModel.waypoints].sort(sortByDay);
+        return [...filteredWaypoints].sort(sortByDay);
 
       case SortType.TIME:
-        return [...this.#waypointsModel.waypoints].sort(sortByTime);
+        return [...filteredWaypoints].sort(sortByTime);
 
       case SortType.PRICE:
-        return [...this.#waypointsModel.waypoints].sort(sortByPrice);
+        return [...filteredWaypoints].sort(sortByPrice);
 
       // TODO: Сортировка по этим типам не требуется
       case SortType.EVENT:
       case SortType.OFFER:
       default:
-        return this.#waypointsModel.waypoints;
+        return filteredWaypoints;
     }
   }
 

@@ -54,7 +54,7 @@ const isEventInPast = (event) => dayjs().isAfter(event.dateTo);
 
 const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && dayjs().isSameOrBefore(event.dateTo);
 
-const isEventInFuture = (event) => dayjs().isAfter(event.dateFrom);
+const isEventInFuture = (event) => dayjs().isBefore(event.dateFrom);
 
 const isDatesEqual = (date1, date2) => dayjs(date1).isSame(date2);
 
