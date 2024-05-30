@@ -6,10 +6,12 @@ import FailedLoadView from '../view/failed-load-view';
 import LoadingView from '../view/loading-view';
 import WaypointPresenter from './waypoint-presenter';
 import { sortByDay, sortByPrice, sortByTime } from '../utils/waypoint';
-import { SortType, UpdateType, UserAction } from '../const';
+import { FilterType, SortType, UpdateType, UserAction } from '../const';
 import { filter } from '../utils/filter';
+import NewWaypointPresenter from './new-waypoint-presenter';
 
 export default class TripPresenter {
+  #newWaypointPresenter = null;
   #waypointPresenters = new Map();
 
   #containerEl = null;
@@ -28,7 +30,7 @@ export default class TripPresenter {
   #offers = [];
   #currentSortType = SortType.DAY;
 
-  constructor({ containerEl, waypointsModel, destinationsModel, offersModel, filterModel }) {
+  constructor({ containerEl, waypointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#containerEl = containerEl;
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
@@ -37,6 +39,12 @@ export default class TripPresenter {
 
     this.#waypointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#newWaypointPresenter = new NewWaypointPresenter({
+      waypointsContainerEl: this.#eventsListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewEventDestroy,
+    });
   }
 
   get #activeFilter() {
@@ -50,13 +58,10 @@ export default class TripPresenter {
     switch (this.#currentSortType) {
       case SortType.DAY:
         return [...filteredWaypoints].sort(sortByDay);
-
       case SortType.TIME:
         return [...filteredWaypoints].sort(sortByTime);
-
       case SortType.PRICE:
         return [...filteredWaypoints].sort(sortByPrice);
-
       // TODO: Сортировка по этим типам не требуется
       case SortType.EVENT:
       case SortType.OFFER:
@@ -70,6 +75,18 @@ export default class TripPresenter {
     this.#offers = [...this.#offersModel.offers];
 
     this.#renderTrip();
+  }
+
+  createNewWaypoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MINOR, FilterType.EVERYTHING);
+    /* TODO: Не получилось передать `destinations` и `offers` в конструктор,
+     *  т.к. на момент вызова конструктора это пустые массивы. Поэтому передаю их через метод `init()`
+     */
+    this.#newWaypointPresenter.init({
+      destinations: this.#destinations,
+      offers: this.#offers,
+    });
   }
 
   #renderSortingComponent() {
@@ -88,9 +105,9 @@ export default class TripPresenter {
   #clearTrip({ resetSortType = false } = {}) {
     this.#waypointPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointPresenters.clear();
+    this.#newWaypointPresenter.destroy();
 
     remove(this.#sortingComponent);
-    remove(this.#eventsListComponent);
     remove(this.#failedLoadComponent);
     remove(this.#loadingComponent);
 
@@ -151,21 +168,17 @@ export default class TripPresenter {
   };
 
   #handleModelEvent = (updateType, update) => {
-    // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this.#waypointPresenters.get(update.id).init(update);
         break;
       case UpdateType.MINOR:
         this.#clearTrip();
         this.#renderTrip();
-        // - обновить список
         break;
       case UpdateType.MAJOR:
         this.#clearTrip({ resetSortType: true });
         this.#renderTrip();
-        // - обновить всю поездку (например, при переключении фильтра)
         break;
       default:
         throw new Error(`Unknown update type: ${updateType}`);

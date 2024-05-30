@@ -8,6 +8,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_WAYPOINT = {
+  id: null,
   type: WaypointEventType.FLIGHT,
   dateFrom: null,
   dateTo: null,
@@ -135,6 +136,12 @@ const createDestinationDescriptionTemplate = (destination) => {
   );
 };
 
+const createOpenEventButtonTemplate = () => (
+  `<button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`
+);
+
 const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
   const {
     id,
@@ -146,11 +153,13 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
     destination,
   } = waypoint;
 
+  const isNewWaypoint = !id;
   const pointTypeOffers = offers.find((offer) => offer.type === type)?.offers || [];
   const pointDestination = destinations.find(({ id: destinationId }) => destinationId === destination) || {};
   const eventStartTimeMatchingAttValue = `event-start-time-${id}`;
   const eventEndTimeMatchingAttValue = `event-end-time-${id}`;
   const eventPriceMatchingAttValue = `event-price-${id}`;
+  const resetButtonName = isNewWaypoint ? 'Cancel' : 'Delete';
 
   return (
     `<li class="trip-events__item">
@@ -177,10 +186,8 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">Delete</button>
-            <button class="event__rollup-btn" type="button">
-              <span class="visually-hidden">Open event</span>
-            </button>
+            <button class="event__reset-btn" type="reset">${resetButtonName}</button>
+            ${!isNewWaypoint ? createOpenEventButtonTemplate() : ''}
           </header>
           <section class="event__details">
             ${pointTypeOffers.length ? createWaypointOffersTemplate(pointTypeOffers, offerIds) : ''}
@@ -200,6 +207,7 @@ export default class WaypointEditView extends AbstractStatefulView {
   #handleRemove = null;
   #eventStartDatepicker = null;
   #eventEndDatepicker = null;
+  #isNewWaypoint = null;
 
   constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onRemove }) {
     super();
@@ -209,6 +217,7 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.#handleBtnFoldClick = onBtnFoldClick;
     this.#handleSubmit = onSubmit;
     this.#handleRemove = onRemove;
+    this.#isNewWaypoint = !waypoint.id;
 
     this._restoreHandlers();
   }
@@ -244,7 +253,10 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.element.querySelector('.event--edit').addEventListener('reset', this.#waypointRemoveHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
+
+    if (!this.#isNewWaypoint) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
+    }
 
     this.#setEventStartDatepicker();
     this.#setEventEndDatepicker();
