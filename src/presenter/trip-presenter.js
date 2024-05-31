@@ -149,6 +149,7 @@ export default class TripPresenter {
 
   #handleModeChange = () => {
     this.#waypointPresenters.forEach((presenter) => presenter.resetView());
+    this.#newWaypointPresenter.destroy();
   };
 
   #handleViewAction = (actionType, updateType, update) => {
