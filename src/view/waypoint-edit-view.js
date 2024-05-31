@@ -253,6 +253,7 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.element.querySelector('.event--edit').addEventListener('reset', this.#waypointRemoveHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('[name="event-price"]').addEventListener('change', this.#priceChangeHandler);
 
     if (!this.#isNewWaypoint) {
       this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
@@ -280,6 +281,11 @@ export default class WaypointEditView extends AbstractStatefulView {
   #typeChangeHandler = (evt) => {
     const type = evt.target.value;
     this.updateElement({ type });
+  };
+
+  #priceChangeHandler = (evt) => {
+    const basePrice = parseInt(evt.target.value, 10);
+    this.updateElement({ basePrice });
   };
 
   #destinationChangeHandler = (evt) => {
