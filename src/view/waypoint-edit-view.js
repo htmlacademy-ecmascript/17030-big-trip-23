@@ -328,7 +328,7 @@ export default class WaypointEditView extends AbstractStatefulView {
   };
 
   #priceChangeHandler = (evt) => {
-    const value = evt.target.value;
+    const value = evt.target.value || 0;
     const basePrice = parseInt(value, 10);
     this.updateElement({ basePrice });
   };
