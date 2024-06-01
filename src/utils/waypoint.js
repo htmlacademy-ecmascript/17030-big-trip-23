@@ -54,9 +54,16 @@ const isEventInPast = (event) => dayjs().isAfter(event.dateTo);
 
 const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && dayjs().isSameOrBefore(event.dateTo);
 
-const isEventInFuture = (event) => dayjs().isAfter(event.dateFrom);
+const isEventInFuture = (event) => dayjs().isBefore(event.dateFrom);
 
-const updateWaypoint = (items, update) => items.map((item) => item.id === update.id ? update : item);
+const isDatesEqual = (date1, date2) => dayjs(date1).isSame(date2);
+
+const sortByDay = (a, b) => {
+  const dateA = dayjs(a.dateFrom);
+  const dateB = dayjs(b.dateFrom);
+
+  return dateB.diff(dateA, 'days');
+};
 
 const sortByPrice = (a, b) => b.basePrice - a.basePrice;
 
@@ -76,7 +83,8 @@ export {
   isEventInPast,
   isEventInPresent,
   isEventInFuture,
-  updateWaypoint,
+  isDatesEqual,
+  sortByDay,
   sortByPrice,
   sortByTime,
 };

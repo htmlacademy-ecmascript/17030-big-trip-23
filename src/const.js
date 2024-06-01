@@ -25,8 +25,22 @@ const SortType = {
   OFFER: 'offer',
 };
 
+const UserAction = {
+  ADD_WAYPOINT: 'ADD_WAYPOINT',
+  UPDATE_WAYPOINT: 'UPDATE_WAYPOINT',
+  REMOVE_WAYPOINT: 'REMOVE_WAYPOINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 export {
   WaypointEventType,
   FilterType,
   SortType,
+  UserAction,
+  UpdateType,
 };
