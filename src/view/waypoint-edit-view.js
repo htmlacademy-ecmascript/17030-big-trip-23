@@ -4,6 +4,7 @@ import { humanizeDate } from '../utils/waypoint';
 import { capitaliseFirstLetter } from '../utils/common';
 import { getDestinationIdByName } from '../mock/destinations';
 import flatpickr from 'flatpickr';
+import he from 'he';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -71,7 +72,7 @@ const createDestinationSelectTemplate = ({ type, destination, destinations, wayp
       <label class="event__label  event__type-output" for="${matchingString}">
         ${capitaliseFirstLetter(type)}
       </label>
-      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${name}" list="${listMatchingString}">
+      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${he.encode(name)}" list="${listMatchingString}">
       <datalist id="${listMatchingString}">
         ${destinations.map((it) => createDestinationOptionTemplate(it.name)).join('')}
       </datalist>
@@ -182,7 +183,7 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="${eventPriceMatchingAttValue}" type="text" name="event-price" value="${basePrice}">
+              <input class="event__input  event__input--price" id="${eventPriceMatchingAttValue}" type="text" name="event-price" value="${he.encode(basePrice.toString(10))}">
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -253,6 +254,7 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.element.querySelector('.event--edit').addEventListener('reset', this.#waypointRemoveHandler);
     this.element.querySelector('.event--edit').addEventListener('change', this.#formChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('keydown', this.#priceKeydownHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
 
     if (!this.#isNewWaypoint) {
@@ -307,8 +309,19 @@ export default class WaypointEditView extends AbstractStatefulView {
     }
   };
 
+  #priceKeydownHandler = (evt) => {
+    const isKeyDigit = /\d/.test(evt.key);
+    const isKeyBackspace = evt.key === 'Backspace';
+    const isKeyDelete = evt.key === 'Delete';
+
+    if (!(isKeyDigit || isKeyBackspace || isKeyDelete)) {
+      evt.preventDefault();
+    }
+  };
+
   #priceChangeHandler = (evt) => {
-    const basePrice = parseInt(evt.target.value, 10);
+    const value = evt.target.value;
+    const basePrice = parseInt(value, 10);
     this.updateElement({ basePrice });
   };
 
