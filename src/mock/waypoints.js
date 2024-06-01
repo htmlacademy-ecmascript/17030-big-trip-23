@@ -27,7 +27,7 @@ const mockWaypoints = [
     dateTo: '2024-08-08T13:35:00.000Z',
     basePrice: 769,
     isFavorite: false,
-    offers: ['3', '4', '7'],
+    offers: ['3', '4'],
     destination: '2',
   },
   {

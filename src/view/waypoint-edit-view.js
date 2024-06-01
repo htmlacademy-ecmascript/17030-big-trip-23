@@ -84,7 +84,7 @@ const createWaypointOfferTemplate = (offer, isChecked) => {
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${key}-${id}" type="checkbox" name="event-offer-${key}" ${isChecked ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${key}-${id}" type="checkbox" value="${id}" name="event-offer-${key}" ${isChecked ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${key}-${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
@@ -251,9 +251,9 @@ export default class WaypointEditView extends AbstractStatefulView {
   _restoreHandlers() {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event--edit').addEventListener('reset', this.#waypointRemoveHandler);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event--edit').addEventListener('change', this.#formChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('[name="event-price"]').addEventListener('change', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
 
     if (!this.#isNewWaypoint) {
       this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#btnFoldClickHandler);
@@ -278,9 +278,33 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.#handleRemove(WaypointEditView.parseStateToWaypoint(this._state));
   };
 
+  #offerChangeHandler = (evt) => {
+    const offerId = evt.target.value;
+    const isChecked = evt.target.checked;
+    let offers = [...this._state.offers];
+
+    if (isChecked) {
+      offers.push(offerId);
+    } else {
+      offers = offers.filter((id) => id !== offerId);
+    }
+
+    this.updateElement({ offers });
+  };
+
   #typeChangeHandler = (evt) => {
     const type = evt.target.value;
     this.updateElement({ type });
+  };
+
+  #formChangeHandler = (evt) => {
+    const input = evt.target;
+
+    if (input.matches('.event__offer-checkbox')) {
+      this.#offerChangeHandler(evt);
+    } else if (input.matches('.event__type-input')) {
+      this.#typeChangeHandler(evt);
+    }
   };
 
   #priceChangeHandler = (evt) => {
