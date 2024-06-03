@@ -8,7 +8,7 @@ import FilterPresenter from './presenter/filter-presenter';
 import NewEventButtonView from './view/new-event-button-view';
 import WaypointsApiService from './waypoints-api-service';
 
-const END_POINT = 'http://21.objects.pages.academy/big-trip';
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 const AUTHORIZATION = 'Basic k2ljdfklsjf34542fg';
 
 const headerContainerEl = document.querySelector('.page-body');
