@@ -24,10 +24,6 @@ const offersModel = new OffersModel({ waypointsApiService });
 const filterModel = new FilterModel();
 
 const init = async () => {
-  const newEventButtonComponent = new NewEventButtonView({
-    onNewEventClick: handleNewEventBtnClick,
-  });
-
   const filterPresenter = new FilterPresenter({
     filterContainerEl,
     filterModel,
@@ -41,6 +37,10 @@ const init = async () => {
     offersModel,
     filterModel,
     onNewEventDestroy: handleNewEventFormClose,
+  });
+
+  const newEventButtonComponent = new NewEventButtonView({
+    onNewEventClick: handleNewEventBtnClick,
   });
 
   function handleNewEventFormClose() {
@@ -57,9 +57,9 @@ const init = async () => {
 
   await destinationsModel.init();
   await offersModel.init();
-  await waypointsModel.init();
-
-  render(newEventButtonComponent, newButtonContainerEl);
+  waypointsModel.init().finally(() => {
+    render(newEventButtonComponent, newButtonContainerEl);
+  });
 };
 
 init();
