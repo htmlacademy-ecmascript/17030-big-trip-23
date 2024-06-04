@@ -344,7 +344,7 @@ export default class WaypointEditView extends AbstractStatefulView {
 
   #destinationChangeHandler = (evt) => {
     const destinationName = evt.target.value;
-    const destination = getDestinationIdByName(destinationName);
+    const destination = getDestinationIdByName(this.#destinations, destinationName);
     this.updateElement({ destination });
   };
 
