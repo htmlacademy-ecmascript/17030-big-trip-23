@@ -16,42 +16,50 @@ const filterContainerEl = headerContainerEl.querySelector('.trip-controls__filte
 const newButtonContainerEl = headerContainerEl.querySelector('.trip-main');
 const tripEventsEl = document.querySelector('.trip-events');
 
-const waypointsModel = new WaypointsModel({
-  waypointsApiService: new WaypointsApiService(END_POINT, AUTHORIZATION),
-});
-const destinationsModel = new DestinationsModel();
-const offersModel = new OffersModel();
+const waypointsApiService = new WaypointsApiService(END_POINT, AUTHORIZATION);
+
+const waypointsModel = new WaypointsModel({ waypointsApiService });
+const destinationsModel = new DestinationsModel({ waypointsApiService });
+const offersModel = new OffersModel({ waypointsApiService });
 const filterModel = new FilterModel();
 
-const newEventButtonComponent = new NewEventButtonView({
-  onNewEventClick: handleNewEventBtnClick,
-});
+const init = async () => {
+  const newEventButtonComponent = new NewEventButtonView({
+    onNewEventClick: handleNewEventBtnClick,
+  });
 
-const filterPresenter = new FilterPresenter({
-  filterContainerEl,
-  filterModel,
-  waypointsModel,
-});
+  const filterPresenter = new FilterPresenter({
+    filterContainerEl,
+    filterModel,
+    waypointsModel,
+  });
 
-const tripPresenter = new TripPresenter({
-  containerEl: tripEventsEl,
-  waypointsModel,
-  destinationsModel,
-  offersModel,
-  filterModel,
-  onNewEventDestroy: handleNewEventFormClose,
-});
+  const tripPresenter = new TripPresenter({
+    containerEl: tripEventsEl,
+    waypointsModel,
+    destinationsModel,
+    offersModel,
+    filterModel,
+    onNewEventDestroy: handleNewEventFormClose,
+  });
 
-function handleNewEventFormClose() {
-  newEventButtonComponent.element.disabled = false;
-}
+  function handleNewEventFormClose() {
+    newEventButtonComponent.element.disabled = false;
+  }
 
-function handleNewEventBtnClick() {
-  tripPresenter.createNewWaypoint();
-  newEventButtonComponent.element.disabled = true;
-}
+  function handleNewEventBtnClick() {
+    tripPresenter.createNewWaypoint();
+    newEventButtonComponent.element.disabled = true;
+  }
 
-render(newEventButtonComponent, newButtonContainerEl);
+  filterPresenter.init();
+  tripPresenter.init();
 
-filterPresenter.init();
-tripPresenter.init();
+  await destinationsModel.init();
+  await offersModel.init();
+  await waypointsModel.init();
+
+  render(newEventButtonComponent, newButtonContainerEl);
+};
+
+init();

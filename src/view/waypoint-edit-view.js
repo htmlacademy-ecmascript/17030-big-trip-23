@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { WaypointEventType } from '../const';
 import { humanizeDate } from '../utils/waypoint';
 import { capitaliseFirstLetter } from '../utils/common';
-import { getDestinationIdByName } from '../mock/destinations';
+import { getDestinationIdByName } from '../utils/destination';
 import flatpickr from 'flatpickr';
 import he from 'he';
 
