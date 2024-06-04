@@ -59,10 +59,10 @@ export default class WaypointsModel extends Observable {
       isFavorite: waypoint['is_favorite'],
     };
 
-    delete waypoint['base_price'];
-    delete waypoint['date_from'];
-    delete waypoint['date_to'];
-    delete waypoint['is_favorite'];
+    delete adaptedWaypoint['base_price'];
+    delete adaptedWaypoint['date_from'];
+    delete adaptedWaypoint['date_to'];
+    delete adaptedWaypoint['is_favorite'];
 
     return adaptedWaypoint;
   }

@@ -49,10 +49,10 @@ export default class WaypointsApiService extends ApiService {
       'is_favorite': waypoint.isFavorite,
     };
 
-    delete waypoint.basePrice;
-    delete waypoint.dateFrom;
-    delete waypoint.dateTo;
-    delete waypoint.isFavorite;
+    delete adaptedWaypoint.basePrice;
+    delete adaptedWaypoint.dateFrom;
+    delete adaptedWaypoint.dateTo;
+    delete adaptedWaypoint.isFavorite;
 
     return adaptedWaypoint;
   }
