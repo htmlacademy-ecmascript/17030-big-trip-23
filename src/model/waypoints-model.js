@@ -25,16 +25,23 @@ export default class WaypointsModel extends Observable {
     this._notify(UpdateType.INIT);
   }
 
-  updateWaypoint(updateType, update) {
+  async updateWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({ id }) => id === update.id);
 
     if (index === -1) {
       throw new Error(`Cannot update waypoint with id ${update.id}`);
     }
 
-    this.#waypoints.splice(index, 1, update);
+    try {
+      const response = await this.#waypointsApiService.updateWaypoint(update);
+      const updatedWaypoint = this.#adaptToClient(response);
 
-    this._notify(updateType, update);
+      this.#waypoints.splice(index, 1, updatedWaypoint);
+
+      this._notify(updateType, update);
+    } catch (e) {
+      throw new Error(`Cannot update waypoint with id ${update.id}`);
+    }
   }
 
   addWaypoint(updateType, update) {
