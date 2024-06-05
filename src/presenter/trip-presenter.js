@@ -1,4 +1,4 @@
-import { remove, render } from '../framework/render';
+import { remove, render, RenderPosition } from '../framework/render';
 import EventsListView from '../view/events-list-view';
 import SortingView from '../view/sorting-view';
 import NoEventsView from '../view/no-events-view';
@@ -29,6 +29,7 @@ export default class TripPresenter {
   #destinations = [];
   #offers = [];
   #currentSortType = SortType.DAY;
+  #isLoading = true;
 
   constructor({ containerEl, waypointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#containerEl = containerEl;
@@ -121,6 +122,11 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     this.#renderSortingComponent();
     render(this.#eventsListComponent, this.#containerEl);
 
@@ -145,6 +151,10 @@ export default class TripPresenter {
 
     waypointPresenter.init(waypoint);
     this.#waypointPresenters.set(waypoint.id, waypointPresenter);
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#containerEl, RenderPosition.BEFOREEND);
   }
 
   #handleModeChange = () => {
@@ -180,6 +190,11 @@ export default class TripPresenter {
       case UpdateType.MAJOR:
         this.#clearTrip({ resetSortType: true });
         this.#renderTrip();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.init();
         break;
       default:
         throw new Error(`Unknown update type: ${updateType}`);

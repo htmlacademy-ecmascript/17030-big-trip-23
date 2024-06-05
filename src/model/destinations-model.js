@@ -1,9 +1,20 @@
-import { getDestinations } from '../mock/destinations';
-
 export default class DestinationsModel {
-  #destinations = getDestinations();
+  #destinations = [];
+  #waypointsApiService = null;
+
+  constructor({ waypointsApiService }) {
+    this.#waypointsApiService = waypointsApiService;
+  }
 
   get destinations() {
     return this.#destinations;
+  }
+
+  async init() {
+    try {
+      this.#destinations = await this.#waypointsApiService.destinations;
+    } catch (e) {
+      this.#destinations = [];
+    }
   }
 }

@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { WaypointEventType } from '../const';
 import { humanizeDate } from '../utils/waypoint';
 import { capitaliseFirstLetter } from '../utils/common';
-import { getDestinationIdByName } from '../mock/destinations';
+import { getDestinationIdByName } from '../utils/destination';
 import flatpickr from 'flatpickr';
 import he from 'he';
 
@@ -328,7 +328,7 @@ export default class WaypointEditView extends AbstractStatefulView {
   };
 
   #priceChangeHandler = (evt) => {
-    const value = evt.target.value || 0;
+    const value = evt.target.value || '0';
     const basePrice = parseInt(value, 10);
     this.updateElement({ basePrice });
   };
@@ -344,7 +344,7 @@ export default class WaypointEditView extends AbstractStatefulView {
 
   #destinationChangeHandler = (evt) => {
     const destinationName = evt.target.value;
-    const destination = getDestinationIdByName(destinationName);
+    const destination = getDestinationIdByName(this.#destinations, destinationName);
     this.updateElement({ destination });
   };
 
