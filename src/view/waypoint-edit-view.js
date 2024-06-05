@@ -9,7 +9,6 @@ import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_WAYPOINT = {
-  id: null,
   type: WaypointEventType.FLIGHT,
   dateFrom: null,
   dateTo: null,

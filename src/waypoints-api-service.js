@@ -20,11 +20,12 @@ export default class WaypointsApiService extends ApiService {
     return this._load({ url: 'offers' }).then(ApiService.parseResponse);
   }
 
-  async createWaypoint(waypoint) {
+  async addWaypoint(waypoint) {
     const response = await this._load({
       url: 'points',
       method: 'POST',
-      body: JSON.stringify(waypoint),
+      body: JSON.stringify(this.#adaptToServer(waypoint)),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
     });
 
     return await ApiService.parseResponse(response);
