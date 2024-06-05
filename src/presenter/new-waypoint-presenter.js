@@ -1,6 +1,5 @@
 import WaypointEditView from '../view/waypoint-edit-view';
 import { UpdateType, UserAction } from '../const';
-import { nanoid } from 'nanoid';
 import { remove, render, RenderPosition } from '../framework/render';
 
 export default class NewWaypointPresenter {
@@ -55,10 +54,7 @@ export default class NewWaypointPresenter {
     this.#handleDataChange(
       UserAction.ADD_WAYPOINT,
       UpdateType.MINOR,
-      {
-        ...waypoint,
-        id: nanoid(),
-      },
+      { ...waypoint },
     );
     this.destroy();
   };
