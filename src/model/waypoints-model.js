@@ -46,7 +46,7 @@ export default class WaypointsModel extends Observable {
     try {
       const response = await this.#waypointsApiService.addWaypoint(update);
       const newWaypoint = this.#adaptToClient(response);
-      this.#waypoints.unshift(newWaypoint);
+      this.#waypoints.push(newWaypoint);
       this._notify(updateType, newWaypoint);
     } catch (e) {
       throw new Error(`Cannot add waypoint with id ${update.id}`);
@@ -61,7 +61,7 @@ export default class WaypointsModel extends Observable {
     }
 
     try {
-      await this.#waypointsApiService.deleteWaypoint(update);
+      await this.#waypointsApiService.removeWaypoint(update);
       this.#waypoints.splice(index, 1);
       this._notify(updateType, update);
     } catch (e) {

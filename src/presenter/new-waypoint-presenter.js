@@ -54,7 +54,7 @@ export default class NewWaypointPresenter {
     this.#handleDataChange(
       UserAction.ADD_WAYPOINT,
       UpdateType.MINOR,
-      { ...waypoint },
+      waypoint,
     );
     this.destroy();
   };
