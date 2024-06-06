@@ -31,8 +31,9 @@ const createWaypointTypeTemplate = ({ eventType, pickedType, waypointId }) => {
   );
 };
 
-const createWaypointTypeSelectTemplate = (pickedType, waypointId) => {
+const createWaypointTypeSelectTemplate = ({ pickedType, waypointId, isDisabled }) => {
   const matchingString = `event-type-toggle-${waypointId}`;
+  const disabledAttr = isDisabled ? 'disabled' : '';
   const waypointTypesTemplate = Object.values(WaypointEventType).map((eventType) => createWaypointTypeTemplate({
     eventType,
     pickedType,
@@ -45,7 +46,7 @@ const createWaypointTypeSelectTemplate = (pickedType, waypointId) => {
         <span class="visually-hidden">Choose event type</span>
         <img class="event__type-icon" width="17" height="17" src="img/icons/${pickedType}.png" alt="Event type icon">
       </label>
-      <input class="event__type-toggle  visually-hidden" id="${matchingString}" type="checkbox">
+      <input class="event__type-toggle  visually-hidden" id="${matchingString}" type="checkbox" ${disabledAttr}>
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
@@ -61,17 +62,18 @@ const createDestinationOptionTemplate = (name) => (
   `<option value="${name}"></option>`
 );
 
-const createDestinationSelectTemplate = ({ type, destination, destinations, waypointId }) => {
+const createDestinationSelectTemplate = ({ pickedType, destination, destinations, waypointId, isDisabled }) => {
   const { name = '' } = destination;
   const matchingString = `event-destination-${waypointId}`;
   const listMatchingString = `destination-list-${waypointId}`;
+  const disabledAttr = isDisabled ? 'disabled' : '';
 
   return (
     `<div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="${matchingString}">
-        ${capitaliseFirstLetter(type)}
+        ${capitaliseFirstLetter(pickedType)}
       </label>
-      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${he.encode(name)}" list="${listMatchingString}">
+      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${he.encode(name)}" list="${listMatchingString}" ${disabledAttr}>
       <datalist id="${listMatchingString}">
         ${destinations.map((it) => createDestinationOptionTemplate(it.name)).join('')}
       </datalist>
@@ -79,12 +81,13 @@ const createDestinationSelectTemplate = ({ type, destination, destinations, wayp
   );
 };
 
-const createWaypointOfferTemplate = (offer, isChecked) => {
+const createWaypointOfferTemplate = ({ offer, isChecked, isDisabled }) => {
   const { id, key, title, price } = offer;
+  const disabledAttr = isDisabled ? 'disabled' : '';
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${key}-${id}" type="checkbox" value="${id}" name="event-offer-${key}" ${isChecked ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${key}-${id}" type="checkbox" value="${id}" name="event-offer-${key}" ${isChecked ? 'checked' : ''} ${disabledAttr}>
       <label class="event__offer-label" for="event-offer-${key}-${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
@@ -94,14 +97,14 @@ const createWaypointOfferTemplate = (offer, isChecked) => {
   );
 };
 
-const createWaypointOffersTemplate = (availableOffers, selectedOfferIds) => (
+const createWaypointOffersTemplate = ({ availableOffers, selectedOfferIds, isDisabled }) => (
   `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
     <div class="event__available-offers">
       ${availableOffers.map((offer) => {
-    const isOfferChecked = selectedOfferIds.includes(offer.id);
-    return createWaypointOfferTemplate(offer, isOfferChecked);
+    const isChecked = selectedOfferIds.includes(offer.id);
+    return createWaypointOfferTemplate({ offer, isChecked, isDisabled });
   }).join('')}
     </div>
   </section>`
@@ -142,7 +145,7 @@ const createOpenEventButtonTemplate = () => (
   </button>`
 );
 
-const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
+const createWaypointEditTemplate = ({ data, destinations, offers }) => {
   const {
     id,
     type,
@@ -151,48 +154,73 @@ const createWaypointEditTemplate = ({ waypoint, destinations, offers }) => {
     basePrice,
     offers: offerIds,
     destination,
-  } = waypoint;
+    isDisabled,
+    isSaving,
+    isDeleting,
+  } = data;
 
   const isNewWaypoint = !id;
   const pointTypeOffers = offers.find((offer) => offer.type === type)?.offers || [];
   const pointDestination = destinations.find(({ id: destinationId }) => destinationId === destination) || {};
-  const eventStartTimeMatchingAttValue = `event-start-time-${id}`;
-  const eventEndTimeMatchingAttValue = `event-end-time-${id}`;
-  const eventPriceMatchingAttValue = `event-price-${id}`;
-  const resetButtonName = isNewWaypoint ? 'Cancel' : 'Delete';
+  const eventStartTimeMatchingAttrValue = `event-start-time-${id}`;
+  const eventEndTimeMatchingAttrValue = `event-end-time-${id}`;
+  const eventPriceMatchingAttrValue = `event-price-${id}`;
+  const saveButtonName = isSaving ? 'Saving' : 'Save';
+  const deleteButtonName = isDeleting ? 'Deleting' : 'Delete';
+  const resetButtonName = isNewWaypoint ? 'Cancel' : deleteButtonName;
+  const disabledAttr = isDisabled ? 'disabled' : '';
+
+  const waypointTypeSelectTemplate = createWaypointTypeSelectTemplate({
+    pickedType: type,
+    waypointId: id,
+    isDisabled,
+  });
+  const destinationSelectTemplate = createDestinationSelectTemplate({
+    pickedType: type,
+    destination: pointDestination,
+    destinations,
+    waypointId: id,
+    isDisabled,
+  });
+  const waypointOffersTemplate = pointTypeOffers.length
+    ? createWaypointOffersTemplate({
+      availableOffers: pointTypeOffers,
+      selectedOfferIds: offerIds,
+      isDisabled,
+    })
+    : '';
+  const openEventButtonTemplate = !isNewWaypoint ? createOpenEventButtonTemplate() : '';
+  const destinationDescriptionTemplate = destination ? createDestinationDescriptionTemplate(pointDestination) : '';
 
   return (
     `<li class="trip-events__item">
         <form class="event event--edit" action="#" method="post">
           <header class="event__header">
-            ${createWaypointTypeSelectTemplate(type, id)}
-
-            ${createDestinationSelectTemplate({ type, destination: pointDestination, destinations, waypointId: id })}
-
+            ${waypointTypeSelectTemplate}
+            ${destinationSelectTemplate}
             <div class="event__field-group  event__field-group--time">
-              <label class="visually-hidden" for="${eventStartTimeMatchingAttValue}">From</label>
-              <input class="event__input  event__input--time" id="${eventStartTimeMatchingAttValue}" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}">
+              <label class="visually-hidden" for="${eventStartTimeMatchingAttrValue}">From</label>
+              <input class="event__input  event__input--time" id="${eventStartTimeMatchingAttrValue}" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}" ${disabledAttr}>
               &mdash;
-              <label class="visually-hidden" for="${eventEndTimeMatchingAttValue}">To</label>
-              <input class="event__input  event__input--time" id="${eventEndTimeMatchingAttValue}" type="text" name="event-end-time" value="${humanizeDate(dateTo)}">
+              <label class="visually-hidden" for="${eventEndTimeMatchingAttrValue}">To</label>
+              <input class="event__input  event__input--time" id="${eventEndTimeMatchingAttrValue}" type="text" name="event-end-time" value="${humanizeDate(dateTo)}" ${disabledAttr}>
             </div>
 
             <div class="event__field-group  event__field-group--price">
-              <label class="event__label" for="${eventPriceMatchingAttValue}">
+              <label class="event__label" for="${eventPriceMatchingAttrValue}">
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="${eventPriceMatchingAttValue}" type="text" name="event-price" value="${he.encode(basePrice.toString(10))}">
+              <input class="event__input  event__input--price" id="${eventPriceMatchingAttrValue}" type="text" name="event-price" value="${he.encode(basePrice.toString(10))}" ${disabledAttr}>
             </div>
 
-            <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">${resetButtonName}</button>
-            ${!isNewWaypoint ? createOpenEventButtonTemplate() : ''}
+            <button class="event__save-btn  btn  btn--blue" type="submit" ${disabledAttr}>${saveButtonName}</button>
+            <button class="event__reset-btn" type="reset" ${disabledAttr}>${resetButtonName}</button>
+            ${openEventButtonTemplate}
           </header>
           <section class="event__details">
-            ${pointTypeOffers.length ? createWaypointOffersTemplate(pointTypeOffers, offerIds) : ''}
-
-            ${destination ? createDestinationDescriptionTemplate(pointDestination) : ''}
+            ${waypointOffersTemplate}
+            ${destinationDescriptionTemplate}
           </section>
         </form>
       </li>`
@@ -224,7 +252,7 @@ export default class WaypointEditView extends AbstractStatefulView {
 
   get template() {
     return createWaypointEditTemplate({
-      waypoint: this._state,
+      data: this._state,
       destinations: this.#destinations,
       offers: this.#offers,
     });
@@ -384,10 +412,21 @@ export default class WaypointEditView extends AbstractStatefulView {
   }
 
   static parseWaypointToState(waypoint) {
-    return { ...waypoint };
+    return {
+      ...waypoint,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
   }
 
   static parseStateToWaypoint(state) {
-    return { ...state };
+    const waypoint = { ...state };
+
+    delete waypoint.isDisabled;
+    delete waypoint.isSaving;
+    delete waypoint.isDeleting;
+
+    return waypoint;
   }
 }
