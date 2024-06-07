@@ -162,19 +162,31 @@ export default class TripPresenter {
     this.#newWaypointPresenter.destroy();
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_WAYPOINT:
         this.#waypointPresenters.get(update.id).setSaving();
-        this.#waypointsModel.updateWaypoint(updateType, update);
+        try {
+          await this.#waypointsModel.updateWaypoint(updateType, update);
+        } catch (e) {
+          this.#waypointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_WAYPOINT:
         this.#newWaypointPresenter.setSaving();
-        this.#waypointsModel.addWaypoint(updateType, update);
+        try {
+          await this.#waypointsModel.addWaypoint(updateType, update);
+        } catch (e) {
+          this.#newWaypointPresenter.setAborting();
+        }
         break;
       case UserAction.REMOVE_WAYPOINT:
         this.#waypointPresenters.get(update.id).setDeleting();
-        this.#waypointsModel.removeWaypoint(updateType, update);
+        try {
+          await this.#waypointsModel.removeWaypoint(updateType, update);
+        } catch (e) {
+          this.#waypointPresenters.get(update.id).setAborting();
+        }
         break;
       default:
         throw new Error(`Unknown action type: ${actionType}`);
