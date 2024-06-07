@@ -165,12 +165,15 @@ export default class TripPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_WAYPOINT:
+        this.#waypointPresenters.get(update.id).setSaving();
         this.#waypointsModel.updateWaypoint(updateType, update);
         break;
       case UserAction.ADD_WAYPOINT:
+        this.#newWaypointPresenter.setSaving();
         this.#waypointsModel.addWaypoint(updateType, update);
         break;
       case UserAction.REMOVE_WAYPOINT:
+        this.#waypointPresenters.get(update.id).setDeleting();
         this.#waypointsModel.removeWaypoint(updateType, update);
         break;
       default:
