@@ -9,6 +9,12 @@ import { sortByDay, sortByPrice, sortByTime } from '../utils/waypoint';
 import { FilterType, SortType, UpdateType, UserAction } from '../const';
 import { filter } from '../utils/filter';
 import NewWaypointPresenter from './new-waypoint-presenter';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
+
+const TimeLimit = {
+  LOWER_LIMIT: 300,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripPresenter {
   #newWaypointPresenter = null;
@@ -30,6 +36,10 @@ export default class TripPresenter {
   #offers = [];
   #currentSortType = SortType.DAY;
   #isLoading = true;
+  uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT,
+  });
 
   constructor({ containerEl, waypointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#containerEl = containerEl;
@@ -163,6 +173,8 @@ export default class TripPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_WAYPOINT:
         this.#waypointPresenters.get(update.id).setSaving();
@@ -191,6 +203,8 @@ export default class TripPresenter {
       default:
         throw new Error(`Unknown action type: ${actionType}`);
     }
+
+    this.uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, update) => {
