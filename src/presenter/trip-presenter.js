@@ -20,6 +20,7 @@ export default class TripPresenter {
   #newWaypointPresenter = null;
   #waypointPresenters = new Map();
 
+  #handleNewEventDestroy = null;
   #containerEl = null;
   #waypointsModel = null;
   #destinationsModel = null;
@@ -47,15 +48,10 @@ export default class TripPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
+    this.#handleNewEventDestroy = onNewEventDestroy;
 
     this.#waypointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-
-    this.#newWaypointPresenter = new NewWaypointPresenter({
-      waypointsContainerEl: this.#eventsListComponent.element,
-      onDataChange: this.#handleViewAction,
-      onDestroy: onNewEventDestroy,
-    });
   }
 
   get #activeFilter() {
@@ -91,13 +87,7 @@ export default class TripPresenter {
   createNewWaypoint() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MINOR, FilterType.EVERYTHING);
-    /* TODO: Не получилось передать `destinations` и `offers` в конструктор,
-     *  т.к. на момент вызова конструктора это пустые массивы. Поэтому передаю их через метод `init()`
-     */
-    this.#newWaypointPresenter.init({
-      destinations: this.#destinations,
-      offers: this.#offers,
-    });
+    this.#newWaypointPresenter.init();
   }
 
   #renderSortingComponent() {
@@ -139,6 +129,7 @@ export default class TripPresenter {
 
     this.#renderSortingComponent();
     render(this.#eventsListComponent, this.#containerEl);
+    this.#renderNewWaypointPresenter();
 
     if (!this.waypoints.length) {
       this.#renderNoEventsComponent();
@@ -161,6 +152,16 @@ export default class TripPresenter {
 
     waypointPresenter.init(waypoint);
     this.#waypointPresenters.set(waypoint.id, waypointPresenter);
+  }
+
+  #renderNewWaypointPresenter() {
+    this.#newWaypointPresenter = new NewWaypointPresenter({
+      waypointsContainerEl: this.#eventsListComponent.element,
+      onDataChange: this.#handleViewAction,
+      destinations: this.#destinations,
+      offers: this.#offers,
+      onDestroy: this.#handleNewEventDestroy,
+    });
   }
 
   #renderLoading() {

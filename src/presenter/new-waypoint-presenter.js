@@ -11,16 +11,15 @@ export default class NewWaypointPresenter {
 
   #waypointEditComponent = null;
 
-  constructor({ waypointsContainerEl, onDataChange, onDestroy }) {
+  constructor({ waypointsContainerEl, destinations, offers, onDataChange, onDestroy }) {
     this.#waypointsContainerEl = waypointsContainerEl;
+    this.#destinations = destinations;
+    this.#offers = offers;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
   }
 
-  init({ destinations, offers }) {
-    this.#destinations = destinations;
-    this.#offers = offers;
-
+  init() {
     if (this.#waypointEditComponent !== null) {
       return;
     }
