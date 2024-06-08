@@ -92,7 +92,7 @@ export default class WaypointPresenter {
 
   setAborting() {
     if (this.#mode === Mode.DEFAULT) {
-      this.#waypointEditComponent.shake();
+      this.#waypointComponent.shake();
       return;
     }
 
