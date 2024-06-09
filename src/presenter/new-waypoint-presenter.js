@@ -1,6 +1,5 @@
 import WaypointEditView from '../view/waypoint-edit-view';
 import { UpdateType, UserAction } from '../const';
-import { nanoid } from 'nanoid';
 import { remove, render, RenderPosition } from '../framework/render';
 
 export default class NewWaypointPresenter {
@@ -12,16 +11,15 @@ export default class NewWaypointPresenter {
 
   #waypointEditComponent = null;
 
-  constructor({ waypointsContainerEl, onDataChange, onDestroy }) {
+  constructor({ waypointsContainerEl, destinations, offers, onDataChange, onDestroy }) {
     this.#waypointsContainerEl = waypointsContainerEl;
+    this.#destinations = destinations;
+    this.#offers = offers;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
   }
 
-  init({ destinations, offers }) {
-    this.#destinations = destinations;
-    this.#offers = offers;
-
+  init() {
     if (this.#waypointEditComponent !== null) {
       return;
     }
@@ -51,16 +49,31 @@ export default class NewWaypointPresenter {
     document.addEventListener('keydown', this.#escKeydownHandler);
   }
 
+  setSaving() {
+    this.#waypointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#waypointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#waypointEditComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (waypoint) => {
     this.#handleDataChange(
       UserAction.ADD_WAYPOINT,
       UpdateType.MINOR,
-      {
-        ...waypoint,
-        id: nanoid(),
-      },
+      waypoint,
     );
-    this.destroy();
   };
 
   #handleRemoveClick = () => {

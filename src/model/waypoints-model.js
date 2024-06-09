@@ -29,37 +29,44 @@ export default class WaypointsModel extends Observable {
     const index = this.#waypoints.findIndex(({ id }) => id === update.id);
 
     if (index === -1) {
-      throw new Error(`Cannot update waypoint with id ${update.id}`);
+      throw new Error(`Cannot update unexisting waypoint with id ${update.id}`);
     }
 
     try {
       const response = await this.#waypointsApiService.updateWaypoint(update);
       const updatedWaypoint = this.#adaptToClient(response);
-
       this.#waypoints.splice(index, 1, updatedWaypoint);
-
       this._notify(updateType, update);
     } catch (e) {
       throw new Error(`Cannot update waypoint with id ${update.id}`);
     }
   }
 
-  addWaypoint(updateType, update) {
-    this.#waypoints.unshift(update);
-
-    this._notify(updateType, update);
+  async addWaypoint(updateType, update) {
+    try {
+      const response = await this.#waypointsApiService.addWaypoint(update);
+      const newWaypoint = this.#adaptToClient(response);
+      this.#waypoints.push(newWaypoint);
+      this._notify(updateType, newWaypoint);
+    } catch (e) {
+      throw new Error(`Cannot add waypoint with id ${update.id}`);
+    }
   }
 
-  removeWaypoint(updateType, update) {
+  async removeWaypoint(updateType, update) {
     const index = this.#waypoints.findIndex(({ id }) => id === update.id);
 
     if (index === -1) {
-      throw new Error(`Cannot remove waypoint with id ${update.id}`);
+      throw new Error(`Cannot remove unexisting waypoint with id ${update.id}`);
     }
 
-    this.#waypoints.splice(index, 1);
-
-    this._notify(updateType, update);
+    try {
+      await this.#waypointsApiService.removeWaypoint(update);
+      this.#waypoints.splice(index, 1);
+      this._notify(updateType, update);
+    } catch (e) {
+      throw new Error(`Cannot remove waypoint with id ${update.id}`);
+    }
   }
 
   #adaptToClient(waypoint) {
