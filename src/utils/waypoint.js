@@ -8,6 +8,7 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 const MONTH_DAY_FORMAT = 'MMM D';
+const DAY_MONTH_FORMAT = 'D MMM';
 const TIME_FORMAT = 'HH:mm';
 const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 const DATE_FORMAT = `DD/MM/YY ${TIME_FORMAT}`;
@@ -16,8 +17,9 @@ const getDateStringFromDate = (date) => date ? dayjs(date).format(ISO_DATE_FORMA
 
 const getTimeStringFromDate = (date) => date ? dayjs(date).format(TIME_FORMAT) : '';
 
-const humanizeDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
 const humanizeMonthDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
+
+const humanizeDayMonth = (date) => date ? dayjs(date).format(DAY_MONTH_FORMAT) : '';
 
 const humanizeDate = (date) => date ? dayjs(date).format(DATE_FORMAT) : '';
 
@@ -92,6 +94,7 @@ export {
   humanizeMonthDay,
   humanizeDate,
   printDuration,
+  printTripDuration,
   isEventInPast,
   isEventInPresent,
   isEventInFuture,

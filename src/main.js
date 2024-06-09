@@ -7,9 +7,10 @@ import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter';
 import NewEventButtonView from './view/new-event-button-view';
 import WaypointsApiService from './waypoints-api-service';
+import TripInfoPresenter from './presenter/trip-info-presenter';
 
 const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
-const AUTHORIZATION = 'Basic k2ljdfklsjf34542fg';
+const AUTHORIZATION = 'Basic k2ljdfklf34542fg';
 
 const headerContainerEl = document.querySelector('.page-body');
 const filterContainerEl = headerContainerEl.querySelector('.trip-controls__filters');
@@ -24,12 +25,17 @@ const offersModel = new OffersModel({ waypointsApiService });
 const filterModel = new FilterModel();
 
 const init = async () => {
+  const tripInfoPresenter = new TripInfoPresenter({
+    tripInfoContainerEl: tripMainEl,
+    waypointsModel,
+    destinationsModel,
+    offersModel,
+  });
   const filterPresenter = new FilterPresenter({
     filterContainerEl,
     filterModel,
     waypointsModel,
   });
-
   const tripPresenter = new TripPresenter({
     containerEl: tripEventsEl,
     waypointsModel,
@@ -52,6 +58,7 @@ const init = async () => {
     newEventButtonComponent.element.disabled = true;
   }
 
+  tripInfoPresenter.init();
   filterPresenter.init();
   tripPresenter.init();
 
