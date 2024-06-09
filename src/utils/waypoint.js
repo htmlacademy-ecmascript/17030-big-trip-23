@@ -17,6 +17,7 @@ const getDateStringFromDate = (date) => date ? dayjs(date).format(ISO_DATE_FORMA
 const getTimeStringFromDate = (date) => date ? dayjs(date).format(TIME_FORMAT) : '';
 
 const humanizeDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
+const humanizeMonthDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
 
 const humanizeDate = (date) => date ? dayjs(date).format(DATE_FORMAT) : '';
 
@@ -50,6 +51,17 @@ const printDuration = (start, end) => {
   return minutes;
 };
 
+const printTripDuration = (start, end) => {
+  const beginningDate = start ? dayjs(start) : '';
+  const finishingDate = end ? dayjs(end) : '';
+
+  if (!(beginningDate || finishingDate)) {
+    return '';
+  }
+
+  return `${humanizeDayMonth(beginningDate)}&nbsp;&mdash;&nbsp;${humanizeDayMonth(finishingDate)}`;
+};
+
 const isEventInPast = (event) => dayjs().isAfter(event.dateTo);
 
 const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && dayjs().isSameOrBefore(event.dateTo);
@@ -77,7 +89,7 @@ const sortByTime = (a, b) => {
 export {
   getDateStringFromDate,
   getTimeStringFromDate,
-  humanizeDay,
+  humanizeMonthDay,
   humanizeDate,
   printDuration,
   isEventInPast,

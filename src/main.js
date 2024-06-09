@@ -13,7 +13,7 @@ const AUTHORIZATION = 'Basic k2ljdfklsjf34542fg';
 
 const headerContainerEl = document.querySelector('.page-body');
 const filterContainerEl = headerContainerEl.querySelector('.trip-controls__filters');
-const newButtonContainerEl = headerContainerEl.querySelector('.trip-main');
+const tripMainEl = headerContainerEl.querySelector('.trip-main');
 const tripEventsEl = document.querySelector('.trip-events');
 
 const waypointsApiService = new WaypointsApiService(END_POINT, AUTHORIZATION);
@@ -58,7 +58,7 @@ const init = async () => {
   await destinationsModel.init();
   await offersModel.init();
   waypointsModel.init().finally(() => {
-    render(newEventButtonComponent, newButtonContainerEl);
+    render(newEventButtonComponent, tripMainEl);
   });
 };
 
