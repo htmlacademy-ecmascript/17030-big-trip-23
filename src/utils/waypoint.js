@@ -34,7 +34,7 @@ const getDiffDuration = (start, end) => {
 const printDuration = (start, end) => {
   const diffDuration = getDiffDuration(start, end);
 
-  const daysDuration = diffDuration.days();
+  const daysDuration = Math.floor(diffDuration.asDays());
   const hoursDuration = diffDuration.hours();
   const minutesDuration = diffDuration.minutes();
 
