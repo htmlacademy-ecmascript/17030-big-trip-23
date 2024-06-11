@@ -32,16 +32,16 @@ export default class FilterPresenter {
         hasItems: filter[FilterType.EVERYTHING](waypoints).length,
       },
       {
-        type: FilterType.PAST,
-        hasItems: filter[FilterType.PAST](waypoints).length,
+        type: FilterType.FUTURE,
+        hasItems: filter[FilterType.FUTURE](waypoints).length,
       },
       {
         type: FilterType.PRESENT,
         hasItems: filter[FilterType.PRESENT](waypoints).length,
       },
       {
-        type: FilterType.FUTURE,
-        hasItems: filter[FilterType.FUTURE](waypoints).length,
+        type: FilterType.PAST,
+        hasItems: filter[FilterType.PAST](waypoints).length,
       },
     ];
   }
