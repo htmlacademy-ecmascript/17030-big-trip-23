@@ -327,7 +327,8 @@ export default class WaypointEditView extends AbstractStatefulView {
 
   #typeChangeHandler = (evt) => {
     const type = evt.target.value;
-    this.updateElement({ type });
+    const offers = [];
+    this.updateElement({ type, offers });
   };
 
   #formChangeHandler = (evt) => {
