@@ -282,7 +282,8 @@ export default class WaypointEditView extends AbstractStatefulView {
     editFormEl.addEventListener('reset', this.#waypointRemoveHandler);
     editFormEl.addEventListener('change', this.#formChangeHandler);
 
-    destinationInputEl.addEventListener('keydown', this.#destinationKeydownHandler);
+    // TODO: возможно не понадобится
+    // destinationInputEl.addEventListener('keydown', this.#destinationKeydownHandler);
     destinationInputEl.addEventListener('change', this.#destinationChangeHandler);
 
     priceInputEl.addEventListener('keydown', this.#priceKeydownHandler);
@@ -357,14 +358,15 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.updateElement({ basePrice });
   };
 
-  #destinationKeydownHandler = (evt) => {
-    const isKeyBackspace = evt.key === 'Backspace';
-    const isKeyDelete = evt.key === 'Delete';
-
-    if (!(isKeyBackspace || isKeyDelete)) {
-      evt.preventDefault();
-    }
-  };
+  // TODO: возможно не понадобится
+  // #destinationKeydownHandler = (evt) => {
+  //   const isKeyBackspace = evt.key === 'Backspace';
+  //   const isKeyDelete = evt.key === 'Delete';
+  //
+  //   if (!(isKeyBackspace || isKeyDelete)) {
+  //     evt.preventDefault();
+  //   }
+  // };
 
   #destinationChangeHandler = (evt) => {
     const destinationName = evt.target.value;
