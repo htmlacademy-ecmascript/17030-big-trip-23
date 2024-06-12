@@ -20,6 +20,7 @@ export default class WaypointsModel extends Observable {
       this.#waypoints = waypoints.map(this.#adaptToClient);
     } catch (e) {
       this.#waypoints = [];
+      throw e;
     }
 
     this._notify(UpdateType.INIT);

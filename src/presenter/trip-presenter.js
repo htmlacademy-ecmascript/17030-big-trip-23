@@ -29,14 +29,15 @@ export default class TripPresenter {
 
   #sortingComponent = null;
   #noEventsComponent = null;
-  #eventsListComponent = new EventsListView();
-  #failedLoadComponent = new FailedLoadView();
+  #failedLoadComponent = null;
   #loadingComponent = new LoadingView();
+  #eventsListComponent = new EventsListView();
 
   #destinations = [];
   #offers = [];
   #currentSortType = SortType.DAY;
   #isLoading = true;
+  #isLoadingFailed = false;
   #isCreatingNewWaypoint = false;
   uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -92,6 +93,13 @@ export default class TripPresenter {
     this.#newWaypointPresenter.init();
   }
 
+  handleApiError() {
+    this.#isLoadingFailed = true;
+
+    this.#clearTrip();
+    this.#renderTrip();
+  }
+
   #renderSortingComponent() {
     this.#sortingComponent = new SortingView({
       currentSortType: this.#currentSortType,
@@ -105,10 +113,15 @@ export default class TripPresenter {
     render(this.#noEventsComponent, this.#containerEl);
   }
 
+  #renderFailedLoadComponent() {
+    this.#failedLoadComponent = new FailedLoadView();
+    render(this.#failedLoadComponent, this.#containerEl);
+  }
+
   #clearTrip({ resetSortType = false } = {}) {
     this.#waypointPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointPresenters.clear();
-    this.#newWaypointPresenter.destroy();
+    this.#newWaypointPresenter?.destroy();
 
     remove(this.#sortingComponent);
     remove(this.#failedLoadComponent);
@@ -124,6 +137,12 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
+    if (this.#isLoadingFailed) {
+      this.#renderFailedLoadComponent();
+      this.#isLoadingFailed = false;
+      return;
+    }
+
     if (this.#isLoading) {
       this.#renderLoading();
       return;

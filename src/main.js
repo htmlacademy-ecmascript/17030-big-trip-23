@@ -64,9 +64,13 @@ const init = async () => {
 
   await destinationsModel.init();
   await offersModel.init();
-  waypointsModel.init().finally(() => {
-    render(newEventButtonComponent, tripMainEl);
-  });
+  waypointsModel.init()
+    .catch(() => {
+      tripPresenter.handleApiError();
+    })
+    .finally(() => {
+      render(newEventButtonComponent, tripMainEl);
+    });
 };
 
 init();
