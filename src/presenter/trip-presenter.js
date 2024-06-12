@@ -206,6 +206,7 @@ export default class TripPresenter {
         this.#waypointPresenters.get(update.id).setSaving();
         try {
           await this.#waypointsModel.updateWaypoint(updateType, update);
+          this.#waypointPresenters.get(update.id).resetView();
         } catch (e) {
           this.#waypointPresenters.get(update.id).setAborting();
         }
