@@ -8,6 +8,7 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 const MONTH_DAY_FORMAT = 'MMM D';
+const DAY_MONTH_FORMAT = 'D MMM';
 const TIME_FORMAT = 'HH:mm';
 const ISO_DATE_FORMAT = 'YYYY-MM-DD';
 const DATE_FORMAT = `DD/MM/YY ${TIME_FORMAT}`;
@@ -16,7 +17,9 @@ const getDateStringFromDate = (date) => date ? dayjs(date).format(ISO_DATE_FORMA
 
 const getTimeStringFromDate = (date) => date ? dayjs(date).format(TIME_FORMAT) : '';
 
-const humanizeDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
+const humanizeMonthDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
+
+const humanizeDayMonth = (date) => date ? dayjs(date).format(DAY_MONTH_FORMAT) : '';
 
 const humanizeDate = (date) => date ? dayjs(date).format(DATE_FORMAT) : '';
 
@@ -31,7 +34,7 @@ const getDiffDuration = (start, end) => {
 const printDuration = (start, end) => {
   const diffDuration = getDiffDuration(start, end);
 
-  const daysDuration = diffDuration.days();
+  const daysDuration = Math.floor(diffDuration.asDays());
   const hoursDuration = diffDuration.hours();
   const minutesDuration = diffDuration.minutes();
 
@@ -50,6 +53,17 @@ const printDuration = (start, end) => {
   return minutes;
 };
 
+const printTripDuration = (start, end) => {
+  const beginningDate = start ? dayjs(start) : '';
+  const finishingDate = end ? dayjs(end) : '';
+
+  if (!(beginningDate || finishingDate)) {
+    return '';
+  }
+
+  return `${humanizeDayMonth(beginningDate)}&nbsp;&mdash;&nbsp;${humanizeDayMonth(finishingDate)}`;
+};
+
 const isEventInPast = (event) => dayjs().isAfter(event.dateTo);
 
 const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && dayjs().isSameOrBefore(event.dateTo);
@@ -62,7 +76,7 @@ const sortByDay = (a, b) => {
   const dateA = dayjs(a.dateFrom);
   const dateB = dayjs(b.dateFrom);
 
-  return dateB.diff(dateA, 'days');
+  return dateA.diff(dateB, 'days');
 };
 
 const sortByPrice = (a, b) => b.basePrice - a.basePrice;
@@ -77,9 +91,10 @@ const sortByTime = (a, b) => {
 export {
   getDateStringFromDate,
   getTimeStringFromDate,
-  humanizeDay,
+  humanizeMonthDay,
   humanizeDate,
   printDuration,
+  printTripDuration,
   isEventInPast,
   isEventInPresent,
   isEventInFuture,

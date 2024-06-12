@@ -37,6 +37,7 @@ export default class TripPresenter {
   #offers = [];
   #currentSortType = SortType.DAY;
   #isLoading = true;
+  #isCreatingNewWaypoint = false;
   uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT,
@@ -85,6 +86,7 @@ export default class TripPresenter {
   }
 
   createNewWaypoint() {
+    this.#isCreatingNewWaypoint = true;
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MINOR, FilterType.EVERYTHING);
     this.#newWaypointPresenter.init();
@@ -132,6 +134,10 @@ export default class TripPresenter {
     this.#renderNewWaypointPresenter();
 
     if (!this.waypoints.length) {
+      if (this.#isCreatingNewWaypoint) {
+        return;
+      }
+
       this.#renderNoEventsComponent();
       return;
     }
@@ -160,7 +166,7 @@ export default class TripPresenter {
       onDataChange: this.#handleViewAction,
       destinations: this.#destinations,
       offers: this.#offers,
-      onDestroy: this.#handleNewEventDestroy,
+      onDestroy: this.#newEventDestroyHandler,
     });
   }
 
@@ -239,5 +245,15 @@ export default class TripPresenter {
     this.#currentSortType = sortType;
     this.#clearTrip();
     this.#renderTrip();
+  };
+
+  #newEventDestroyHandler = () => {
+    this.#isCreatingNewWaypoint = false;
+
+    if (!this.waypoints.length) {
+      this.#renderNoEventsComponent();
+    }
+
+    this.#handleNewEventDestroy();
   };
 }

@@ -126,18 +126,14 @@ const createDestinationPhotosTemplate = (picture) => (
   </div>`
 );
 
-const createDestinationDescriptionTemplate = (destination) => {
-  const { description, pictures } = destination;
+const createDestinationDescriptionTemplate = ({ description, pictures }) => (description || pictures?.length) ? (
+  `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${description}</p>
 
-  return (
-    `<section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
-
-      ${pictures?.length ? createDestinationPhotosTemplate(pictures) : ''}
-    </section>`
-  );
-};
+    ${pictures?.length ? createDestinationPhotosTemplate(pictures) : ''}
+  </section>`
+) : '';
 
 const createOpenEventButtonTemplate = () => (
   `<button class="event__rollup-btn" type="button">
@@ -286,7 +282,8 @@ export default class WaypointEditView extends AbstractStatefulView {
     editFormEl.addEventListener('reset', this.#waypointRemoveHandler);
     editFormEl.addEventListener('change', this.#formChangeHandler);
 
-    destinationInputEl.addEventListener('keydown', this.#destinationKeydownHandler);
+    // TODO: возможно не понадобится
+    // destinationInputEl.addEventListener('keydown', this.#destinationKeydownHandler);
     destinationInputEl.addEventListener('change', this.#destinationChangeHandler);
 
     priceInputEl.addEventListener('keydown', this.#priceKeydownHandler);
@@ -331,7 +328,8 @@ export default class WaypointEditView extends AbstractStatefulView {
 
   #typeChangeHandler = (evt) => {
     const type = evt.target.value;
-    this.updateElement({ type });
+    const offers = [];
+    this.updateElement({ type, offers });
   };
 
   #formChangeHandler = (evt) => {
@@ -360,14 +358,15 @@ export default class WaypointEditView extends AbstractStatefulView {
     this.updateElement({ basePrice });
   };
 
-  #destinationKeydownHandler = (evt) => {
-    const isKeyBackspace = evt.key === 'Backspace';
-    const isKeyDelete = evt.key === 'Delete';
-
-    if (!(isKeyBackspace || isKeyDelete)) {
-      evt.preventDefault();
-    }
-  };
+  // TODO: возможно не понадобится
+  // #destinationKeydownHandler = (evt) => {
+  //   const isKeyBackspace = evt.key === 'Backspace';
+  //   const isKeyDelete = evt.key === 'Delete';
+  //
+  //   if (!(isKeyBackspace || isKeyDelete)) {
+  //     evt.preventDefault();
+  //   }
+  // };
 
   #destinationChangeHandler = (evt) => {
     const destinationName = evt.target.value;

@@ -1,4 +1,4 @@
-import { getDateStringFromDate, getTimeStringFromDate, humanizeDay, printDuration } from '../utils/waypoint';
+import { getDateStringFromDate, getTimeStringFromDate, humanizeMonthDay, printDuration } from '../utils/waypoint';
 import AbstractView from '../framework/view/abstract-view';
 
 const createOfferTemplate = (offer) => {
@@ -31,7 +31,7 @@ const createWaypointView = ({ waypoint, destinations, offers }) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="${getDateStringFromDate(dateFrom)}">${humanizeDay(dateFrom)}</time>
+        <time class="event__date" datetime="${getDateStringFromDate(dateFrom)}">${humanizeMonthDay(dateFrom)}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${typeImageName}" alt="Event type icon">
         </div>
