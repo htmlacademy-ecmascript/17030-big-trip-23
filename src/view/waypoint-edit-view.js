@@ -161,8 +161,8 @@ const createWaypointEditTemplate = ({ data, destinations, offers }) => {
   const eventStartTimeMatchingAttrValue = `event-start-time-${id}`;
   const eventEndTimeMatchingAttrValue = `event-end-time-${id}`;
   const eventPriceMatchingAttrValue = `event-price-${id}`;
-  const saveButtonName = isSaving ? 'Saving' : 'Save';
-  const deleteButtonName = isDeleting ? 'Deleting' : 'Delete';
+  const saveButtonName = isSaving ? 'Saving...' : 'Save';
+  const deleteButtonName = isDeleting ? 'Deleting...' : 'Delete';
   const resetButtonName = isNewWaypoint ? 'Cancel' : deleteButtonName;
   const disabledAttr = isDisabled ? 'disabled' : '';
 
@@ -211,7 +211,7 @@ const createWaypointEditTemplate = ({ data, destinations, offers }) => {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit" ${disabledAttr}>${saveButtonName}</button>
-            <button class="event__reset-btn" type="reset" ${disabledAttr}>${resetButtonName}</button>
+            <button class="event__reset-btn" type="reset">${resetButtonName}</button>
             ${openEventButtonTemplate}
           </header>
           <section class="event__details">
