@@ -1,5 +1,6 @@
 import TripInfoView from '../view/trip-info-view';
 import { remove, render, RenderPosition, replace } from '../framework/render';
+import { sortByDay } from '../utils/waypoint';
 
 export default class TripInfoPresenter {
   #tripInfoContainerEl = null;
@@ -18,7 +19,7 @@ export default class TripInfoPresenter {
   }
 
   get waypoints() {
-    return this.#waypointsModel.waypoints;
+    return [...this.#waypointsModel.waypoints].sort(sortByDay);
   }
 
   get destinations() {
@@ -30,6 +31,11 @@ export default class TripInfoPresenter {
   }
 
   init() {
+    if (!this.waypoints?.length) {
+      remove(this.#tripInfoComponent);
+      return;
+    }
+
     const prevTripInfoComponent = this.#tripInfoComponent;
 
     this.#tripInfoComponent = new TripInfoView({
