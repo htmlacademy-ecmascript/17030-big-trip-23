@@ -74,7 +74,7 @@ const sortByDay = (a, b) => {
   const dateA = dayjs(a.dateFrom);
   const dateB = dayjs(b.dateFrom);
 
-  return dateA.diff(dateB, 'days');
+  return dateA.diff(dateB, 'D');
 };
 
 const sortByPrice = (a, b) => b.basePrice - a.basePrice;
