@@ -70,8 +70,6 @@ const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && day
 
 const isEventInFuture = (event) => dayjs().isBefore(event.dateFrom);
 
-const isDatesEqual = (date1, date2) => dayjs(date1).isSame(date2);
-
 const sortByDay = (a, b) => {
   const dateA = dayjs(a.dateFrom);
   const dateB = dayjs(b.dateFrom);
@@ -98,7 +96,6 @@ export {
   isEventInPast,
   isEventInPresent,
   isEventInFuture,
-  isDatesEqual,
   sortByDay,
   sortByPrice,
   sortByTime,
