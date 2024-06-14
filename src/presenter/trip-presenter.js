@@ -71,7 +71,6 @@ export default class TripPresenter {
         return [...filteredWaypoints].sort(sortByTime);
       case SortType.PRICE:
         return [...filteredWaypoints].sort(sortByPrice);
-      // TODO: Сортировка по этим типам не требуется
       case SortType.EVENT:
       case SortType.OFFER:
       default:
