@@ -405,6 +405,7 @@ export default class WaypointEditView extends AbstractStatefulView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
         onClose: this.#eventEndDatepickerCloseHandler,
       },
     );
