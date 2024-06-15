@@ -2,8 +2,8 @@ import Observable from '../framework/observable';
 import { UpdateType } from '../const';
 
 export default class WaypointsModel extends Observable {
-  #waypointsApiService = null;
   #waypoints = [];
+  #waypointsApiService = null;
 
   constructor({ waypointsApiService }) {
     super();

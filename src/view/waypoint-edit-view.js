@@ -254,10 +254,6 @@ export default class WaypointEditView extends AbstractStatefulView {
     });
   }
 
-  reset(waypoint) {
-    this.updateElement(WaypointEditView.parseWaypointToState(waypoint));
-  }
-
   removeElement() {
     super.removeElement();
 
@@ -293,6 +289,10 @@ export default class WaypointEditView extends AbstractStatefulView {
 
     this.#setEventStartDatepicker();
     this.#setEventEndDatepicker();
+  }
+
+  reset(waypoint) {
+    this.updateElement(WaypointEditView.parseWaypointToState(waypoint));
   }
 
   #btnFoldClickHandler = (evt) => {

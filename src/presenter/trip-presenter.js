@@ -20,8 +20,6 @@ export default class TripPresenter {
   #newWaypointPresenter = null;
   #waypointPresenters = new Map();
 
-  #handleNewEventDestroy = null;
-  #containerElement = null;
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
@@ -33,6 +31,8 @@ export default class TripPresenter {
   #loadingComponent = new LoadingView();
   #eventsListComponent = new EventsListView();
 
+  #handleNewEventDestroy = null;
+  #containerElement = null;
   #destinations = [];
   #offers = [];
   #currentSortType = SortType.DAY;

@@ -116,6 +116,19 @@ export default class WaypointPresenter {
     }
   }
 
+  #replaceWaypointToEditedWaypoint = () => {
+    replace(this.#waypointEditComponent, this.#waypointComponent);
+    document.addEventListener('keydown', this.#escKeydownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  };
+
+  #replaceEditedWaypointToWaypoint = () => {
+    replace(this.#waypointComponent, this.#waypointEditComponent);
+    document.removeEventListener('keydown', this.#escKeydownHandler);
+    this.#mode = Mode.DEFAULT;
+  };
+
   #escKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
@@ -155,18 +168,5 @@ export default class WaypointPresenter {
       UpdateType.MINOR,
       { ...this.#waypoint, isFavorite: !this.#waypoint.isFavorite },
     );
-  };
-
-  #replaceWaypointToEditedWaypoint = () => {
-    replace(this.#waypointEditComponent, this.#waypointComponent);
-    document.addEventListener('keydown', this.#escKeydownHandler);
-    this.#handleModeChange();
-    this.#mode = Mode.EDITING;
-  };
-
-  #replaceEditedWaypointToWaypoint = () => {
-    replace(this.#waypointComponent, this.#waypointEditComponent);
-    document.removeEventListener('keydown', this.#escKeydownHandler);
-    this.#mode = Mode.DEFAULT;
   };
 }
