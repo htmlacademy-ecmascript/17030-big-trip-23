@@ -12,10 +12,10 @@ import TripInfoPresenter from './presenter/trip-info-presenter';
 const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 const AUTHORIZATION = 'Basic k2ljdfklf34542fg';
 
-const headerContainerEl = document.querySelector('.page-body');
-const filterContainerEl = headerContainerEl.querySelector('.trip-controls__filters');
-const tripMainEl = headerContainerEl.querySelector('.trip-main');
-const tripEventsEl = document.querySelector('.trip-events');
+const headerContainerElement = document.querySelector('.page-body');
+const filterContainerElement = headerContainerElement.querySelector('.trip-controls__filters');
+const tripMainElement = headerContainerElement.querySelector('.trip-main');
+const tripEventsElement = document.querySelector('.trip-events');
 
 const waypointsApiService = new WaypointsApiService(END_POINT, AUTHORIZATION);
 
@@ -26,18 +26,18 @@ const filterModel = new FilterModel();
 
 const init = async () => {
   const tripInfoPresenter = new TripInfoPresenter({
-    tripInfoContainerEl: tripMainEl,
+    tripInfoContainerElement: tripMainElement,
     waypointsModel,
     destinationsModel,
     offersModel,
   });
   const filterPresenter = new FilterPresenter({
-    filterContainerEl,
+    filterContainerElement,
     filterModel,
     waypointsModel,
   });
   const tripPresenter = new TripPresenter({
-    containerEl: tripEventsEl,
+    containerElement: tripEventsElement,
     waypointsModel,
     destinationsModel,
     offersModel,
@@ -69,7 +69,7 @@ const init = async () => {
       tripPresenter.handleApiError();
     })
     .finally(() => {
-      render(newEventButtonComponent, tripMainEl);
+      render(newEventButtonComponent, tripMainElement);
     });
 };
 

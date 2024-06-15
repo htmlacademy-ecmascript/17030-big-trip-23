@@ -273,22 +273,22 @@ export default class WaypointEditView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    const editFormEl = this.element.querySelector('.event--edit');
-    const destinationInputEl = this.element.querySelector('.event__input--destination');
-    const priceInputEl = this.element.querySelector('.event__input--price');
-    const rollupBtnEl = this.element.querySelector('.event__rollup-btn');
+    const editFormElement = this.element.querySelector('.event--edit');
+    const destinationInputElement = this.element.querySelector('.event__input--destination');
+    const priceInputElement = this.element.querySelector('.event__input--price');
+    const rollupBtnElement = this.element.querySelector('.event__rollup-btn');
 
-    editFormEl.addEventListener('submit', this.#formSubmitHandler);
-    editFormEl.addEventListener('reset', this.#waypointRemoveHandler);
-    editFormEl.addEventListener('change', this.#formChangeHandler);
+    editFormElement.addEventListener('submit', this.#formSubmitHandler);
+    editFormElement.addEventListener('reset', this.#waypointRemoveHandler);
+    editFormElement.addEventListener('change', this.#formChangeHandler);
 
-    destinationInputEl.addEventListener('change', this.#destinationChangeHandler);
+    destinationInputElement.addEventListener('change', this.#destinationChangeHandler);
 
-    priceInputEl.addEventListener('keydown', this.#priceKeydownHandler);
-    priceInputEl.addEventListener('change', this.#priceChangeHandler);
+    priceInputElement.addEventListener('keydown', this.#priceKeydownHandler);
+    priceInputElement.addEventListener('change', this.#priceChangeHandler);
 
     if (!this.#isNewWaypoint) {
-      rollupBtnEl.addEventListener('click', this.#btnFoldClickHandler);
+      rollupBtnElement.addEventListener('click', this.#btnFoldClickHandler);
     }
 
     this.#setEventStartDatepicker();

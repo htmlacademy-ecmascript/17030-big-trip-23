@@ -9,18 +9,21 @@ const Mode = {
 };
 
 export default class WaypointPresenter {
-  #waypointsContainerEl = null;
+  #waypointsContainerElement = null;
   #destinations = [];
   #offers = [];
   #waypoint = null;
+
   #waypointComponent = null;
   #waypointEditComponent = null;
+
   #handleDataChange = null;
   #handleModeChange = null;
+
   #mode = Mode.DEFAULT;
 
-  constructor({ waypointsContainerEl, destinations, offers, onDataChange, onModeChange }) {
-    this.#waypointsContainerEl = waypointsContainerEl;
+  constructor({ waypointsContainerElement, destinations, offers, onDataChange, onModeChange }) {
+    this.#waypointsContainerElement = waypointsContainerElement;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleDataChange = onDataChange;
@@ -50,7 +53,7 @@ export default class WaypointPresenter {
     });
 
     if (prevWaypointComponent === null || prevWaypointEditComponent === null) {
-      render(this.#waypointComponent, this.#waypointsContainerEl);
+      render(this.#waypointComponent, this.#waypointsContainerElement);
       return;
     }
 

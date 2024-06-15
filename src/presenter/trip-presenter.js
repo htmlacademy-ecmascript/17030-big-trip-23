@@ -21,7 +21,7 @@ export default class TripPresenter {
   #waypointPresenters = new Map();
 
   #handleNewEventDestroy = null;
-  #containerEl = null;
+  #containerElement = null;
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
@@ -44,8 +44,8 @@ export default class TripPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
-  constructor({ containerEl, waypointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
-    this.#containerEl = containerEl;
+  constructor({ containerElement, waypointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
+    this.#containerElement = containerElement;
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
@@ -104,17 +104,17 @@ export default class TripPresenter {
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange,
     });
-    render(this.#sortingComponent, this.#containerEl);
+    render(this.#sortingComponent, this.#containerElement);
   }
 
   #renderNoEventsComponent() {
     this.#noEventsComponent = new NoEventsView({ activeFilter: this.#activeFilter });
-    render(this.#noEventsComponent, this.#containerEl);
+    render(this.#noEventsComponent, this.#containerElement);
   }
 
   #renderFailedLoadComponent() {
     this.#failedLoadComponent = new FailedLoadView();
-    render(this.#failedLoadComponent, this.#containerEl);
+    render(this.#failedLoadComponent, this.#containerElement);
   }
 
   #clearTrip({ resetSortType = false } = {}) {
@@ -148,7 +148,7 @@ export default class TripPresenter {
     }
 
     this.#renderSortingComponent();
-    render(this.#eventsListComponent, this.#containerEl);
+    render(this.#eventsListComponent, this.#containerElement);
     this.#renderNewWaypointPresenter();
 
     if (!this.waypoints.length) {
@@ -167,7 +167,7 @@ export default class TripPresenter {
 
   #renderWaypointPresenter(waypoint) {
     const waypointPresenter = new WaypointPresenter({
-      waypointsContainerEl: this.#eventsListComponent.element,
+      waypointsContainerElement: this.#eventsListComponent.element,
       destinations: this.#destinations,
       offers: this.#offers,
       onDataChange: this.#handleViewAction,
@@ -180,7 +180,7 @@ export default class TripPresenter {
 
   #renderNewWaypointPresenter() {
     this.#newWaypointPresenter = new NewWaypointPresenter({
-      waypointsContainerEl: this.#eventsListComponent.element,
+      waypointsContainerElement: this.#eventsListComponent.element,
       onDataChange: this.#handleViewAction,
       destinations: this.#destinations,
       offers: this.#offers,
@@ -189,7 +189,7 @@ export default class TripPresenter {
   }
 
   #renderLoading() {
-    render(this.#loadingComponent, this.#containerEl, RenderPosition.BEFOREEND);
+    render(this.#loadingComponent, this.#containerElement, RenderPosition.BEFOREEND);
   }
 
   #handleModeChange = () => {
