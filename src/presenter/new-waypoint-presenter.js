@@ -3,7 +3,7 @@ import { UpdateType, UserAction } from '../const';
 import { remove, render, RenderPosition } from '../framework/render';
 
 export default class NewWaypointPresenter {
-  #waypointsContainerEl = null;
+  #waypointsContainerElement = null;
   #handleDataChange = null;
   #handleDestroy = null;
   #destinations = [];
@@ -11,8 +11,8 @@ export default class NewWaypointPresenter {
 
   #waypointEditComponent = null;
 
-  constructor({ waypointsContainerEl, destinations, offers, onDataChange, onDestroy }) {
-    this.#waypointsContainerEl = waypointsContainerEl;
+  constructor({ waypointsContainerElement, destinations, offers, onDataChange, onDestroy }) {
+    this.#waypointsContainerElement = waypointsContainerElement;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleDataChange = onDataChange;
@@ -31,7 +31,7 @@ export default class NewWaypointPresenter {
       onRemove: this.#handleRemoveClick,
     });
 
-    render(this.#waypointEditComponent, this.#waypointsContainerEl, RenderPosition.AFTERBEGIN);
+    render(this.#waypointEditComponent, this.#waypointsContainerElement, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeydownHandler);
   }

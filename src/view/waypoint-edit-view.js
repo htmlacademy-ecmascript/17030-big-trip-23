@@ -161,8 +161,8 @@ const createWaypointEditTemplate = ({ data, destinations, offers }) => {
   const eventStartTimeMatchingAttrValue = `event-start-time-${id}`;
   const eventEndTimeMatchingAttrValue = `event-end-time-${id}`;
   const eventPriceMatchingAttrValue = `event-price-${id}`;
-  const saveButtonName = isSaving ? 'Saving' : 'Save';
-  const deleteButtonName = isDeleting ? 'Deleting' : 'Delete';
+  const saveButtonName = isSaving ? 'Saving...' : 'Save';
+  const deleteButtonName = isDeleting ? 'Deleting...' : 'Delete';
   const resetButtonName = isNewWaypoint ? 'Cancel' : deleteButtonName;
   const disabledAttr = isDisabled ? 'disabled' : '';
 
@@ -211,7 +211,7 @@ const createWaypointEditTemplate = ({ data, destinations, offers }) => {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit" ${disabledAttr}>${saveButtonName}</button>
-            <button class="event__reset-btn" type="reset" ${disabledAttr}>${resetButtonName}</button>
+            <button class="event__reset-btn" type="reset">${resetButtonName}</button>
             ${openEventButtonTemplate}
           </header>
           <section class="event__details">
@@ -254,10 +254,6 @@ export default class WaypointEditView extends AbstractStatefulView {
     });
   }
 
-  reset(waypoint) {
-    this.updateElement(WaypointEditView.parseWaypointToState(waypoint));
-  }
-
   removeElement() {
     super.removeElement();
 
@@ -273,28 +269,30 @@ export default class WaypointEditView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    const editFormEl = this.element.querySelector('.event--edit');
-    const destinationInputEl = this.element.querySelector('.event__input--destination');
-    const priceInputEl = this.element.querySelector('.event__input--price');
-    const rollupBtnEl = this.element.querySelector('.event__rollup-btn');
+    const editFormElement = this.element.querySelector('.event--edit');
+    const destinationInputElement = this.element.querySelector('.event__input--destination');
+    const priceInputElement = this.element.querySelector('.event__input--price');
+    const rollupBtnElement = this.element.querySelector('.event__rollup-btn');
 
-    editFormEl.addEventListener('submit', this.#formSubmitHandler);
-    editFormEl.addEventListener('reset', this.#waypointRemoveHandler);
-    editFormEl.addEventListener('change', this.#formChangeHandler);
+    editFormElement.addEventListener('submit', this.#formSubmitHandler);
+    editFormElement.addEventListener('reset', this.#waypointRemoveHandler);
+    editFormElement.addEventListener('change', this.#formChangeHandler);
 
-    // TODO: возможно не понадобится
-    // destinationInputEl.addEventListener('keydown', this.#destinationKeydownHandler);
-    destinationInputEl.addEventListener('change', this.#destinationChangeHandler);
+    destinationInputElement.addEventListener('change', this.#destinationChangeHandler);
 
-    priceInputEl.addEventListener('keydown', this.#priceKeydownHandler);
-    priceInputEl.addEventListener('change', this.#priceChangeHandler);
+    priceInputElement.addEventListener('keydown', this.#priceKeydownHandler);
+    priceInputElement.addEventListener('change', this.#priceChangeHandler);
 
     if (!this.#isNewWaypoint) {
-      rollupBtnEl.addEventListener('click', this.#btnFoldClickHandler);
+      rollupBtnElement.addEventListener('click', this.#btnFoldClickHandler);
     }
 
     this.#setEventStartDatepicker();
     this.#setEventEndDatepicker();
+  }
+
+  reset(waypoint) {
+    this.updateElement(WaypointEditView.parseWaypointToState(waypoint));
   }
 
   #btnFoldClickHandler = (evt) => {
@@ -355,18 +353,8 @@ export default class WaypointEditView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     const value = evt.target.value || '0';
     const basePrice = parseInt(value, 10);
-    this.updateElement({ basePrice });
+    this._setState({ basePrice });
   };
-
-  // TODO: возможно не понадобится
-  // #destinationKeydownHandler = (evt) => {
-  //   const isKeyBackspace = evt.key === 'Backspace';
-  //   const isKeyDelete = evt.key === 'Delete';
-  //
-  //   if (!(isKeyBackspace || isKeyDelete)) {
-  //     evt.preventDefault();
-  //   }
-  // };
 
   #destinationChangeHandler = (evt) => {
     const destinationName = evt.target.value;
@@ -405,6 +393,7 @@ export default class WaypointEditView extends AbstractStatefulView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
         onClose: this.#eventEndDatepickerCloseHandler,
       },
     );

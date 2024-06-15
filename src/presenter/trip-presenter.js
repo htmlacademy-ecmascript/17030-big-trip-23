@@ -20,8 +20,6 @@ export default class TripPresenter {
   #newWaypointPresenter = null;
   #waypointPresenters = new Map();
 
-  #handleNewEventDestroy = null;
-  #containerEl = null;
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
@@ -29,22 +27,25 @@ export default class TripPresenter {
 
   #sortingComponent = null;
   #noEventsComponent = null;
-  #eventsListComponent = new EventsListView();
-  #failedLoadComponent = new FailedLoadView();
+  #failedLoadComponent = null;
   #loadingComponent = new LoadingView();
+  #eventsListComponent = new EventsListView();
 
+  #handleNewEventDestroy = null;
+  #containerElement = null;
   #destinations = [];
   #offers = [];
   #currentSortType = SortType.DAY;
   #isLoading = true;
+  #isLoadingFailed = false;
   #isCreatingNewWaypoint = false;
   uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
-  constructor({ containerEl, waypointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
-    this.#containerEl = containerEl;
+  constructor({ containerElement, waypointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
+    this.#containerElement = containerElement;
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
@@ -70,7 +71,6 @@ export default class TripPresenter {
         return [...filteredWaypoints].sort(sortByTime);
       case SortType.PRICE:
         return [...filteredWaypoints].sort(sortByPrice);
-      // TODO: Сортировка по этим типам не требуется
       case SortType.EVENT:
       case SortType.OFFER:
       default:
@@ -92,23 +92,35 @@ export default class TripPresenter {
     this.#newWaypointPresenter.init();
   }
 
+  handleApiError() {
+    this.#isLoadingFailed = true;
+
+    this.#clearTrip();
+    this.#renderTrip();
+  }
+
   #renderSortingComponent() {
     this.#sortingComponent = new SortingView({
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange,
     });
-    render(this.#sortingComponent, this.#containerEl);
+    render(this.#sortingComponent, this.#containerElement);
   }
 
   #renderNoEventsComponent() {
     this.#noEventsComponent = new NoEventsView({ activeFilter: this.#activeFilter });
-    render(this.#noEventsComponent, this.#containerEl);
+    render(this.#noEventsComponent, this.#containerElement);
+  }
+
+  #renderFailedLoadComponent() {
+    this.#failedLoadComponent = new FailedLoadView();
+    render(this.#failedLoadComponent, this.#containerElement);
   }
 
   #clearTrip({ resetSortType = false } = {}) {
     this.#waypointPresenters.forEach((presenter) => presenter.destroy());
     this.#waypointPresenters.clear();
-    this.#newWaypointPresenter.destroy();
+    this.#newWaypointPresenter?.destroy();
 
     remove(this.#sortingComponent);
     remove(this.#failedLoadComponent);
@@ -124,13 +136,19 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
+    if (this.#isLoadingFailed) {
+      this.#renderFailedLoadComponent();
+      this.#isLoadingFailed = false;
+      return;
+    }
+
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
 
     this.#renderSortingComponent();
-    render(this.#eventsListComponent, this.#containerEl);
+    render(this.#eventsListComponent, this.#containerElement);
     this.#renderNewWaypointPresenter();
 
     if (!this.waypoints.length) {
@@ -149,7 +167,7 @@ export default class TripPresenter {
 
   #renderWaypointPresenter(waypoint) {
     const waypointPresenter = new WaypointPresenter({
-      waypointsContainerEl: this.#eventsListComponent.element,
+      waypointsContainerElement: this.#eventsListComponent.element,
       destinations: this.#destinations,
       offers: this.#offers,
       onDataChange: this.#handleViewAction,
@@ -162,7 +180,7 @@ export default class TripPresenter {
 
   #renderNewWaypointPresenter() {
     this.#newWaypointPresenter = new NewWaypointPresenter({
-      waypointsContainerEl: this.#eventsListComponent.element,
+      waypointsContainerElement: this.#eventsListComponent.element,
       onDataChange: this.#handleViewAction,
       destinations: this.#destinations,
       offers: this.#offers,
@@ -171,7 +189,7 @@ export default class TripPresenter {
   }
 
   #renderLoading() {
-    render(this.#loadingComponent, this.#containerEl, RenderPosition.BEFOREEND);
+    render(this.#loadingComponent, this.#containerElement, RenderPosition.BEFOREEND);
   }
 
   #handleModeChange = () => {
@@ -187,6 +205,7 @@ export default class TripPresenter {
         this.#waypointPresenters.get(update.id).setSaving();
         try {
           await this.#waypointsModel.updateWaypoint(updateType, update);
+          this.#waypointPresenters.get(update.id).resetView();
         } catch (e) {
           this.#waypointPresenters.get(update.id).setAborting();
         }

@@ -4,18 +4,14 @@ import FiltersView from '../view/filters-view';
 import { remove, render, replace } from '../framework/render';
 
 export default class FilterPresenter {
-  #filterContainerEl = null;
+  #filterContainerElement = null;
   #filterModel = null;
   #waypointsModel = null;
 
   #filterComponent = null;
 
-  constructor({
-    filterContainerEl,
-    filterModel,
-    waypointsModel,
-  }) {
-    this.#filterContainerEl = filterContainerEl;
+  constructor({ filterContainerElement, filterModel, waypointsModel }) {
+    this.#filterContainerElement = filterContainerElement;
     this.#filterModel = filterModel;
     this.#waypointsModel = waypointsModel;
 
@@ -57,7 +53,7 @@ export default class FilterPresenter {
     });
 
     if (prevFilterComponent === null) {
-      render(this.#filterComponent, this.#filterContainerEl);
+      render(this.#filterComponent, this.#filterContainerElement);
       return;
     }
 

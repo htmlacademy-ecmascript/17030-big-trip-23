@@ -2,7 +2,6 @@ import WaypointView from '../view/waypoint-view';
 import WaypointEditView from '../view/waypoint-edit-view';
 import { remove, render, replace } from '../framework/render';
 import { UpdateType, UserAction } from '../const';
-import { isDatesEqual } from '../utils/waypoint';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -10,18 +9,21 @@ const Mode = {
 };
 
 export default class WaypointPresenter {
-  #waypointsContainerEl = null;
+  #waypointsContainerElement = null;
   #destinations = [];
   #offers = [];
   #waypoint = null;
+
   #waypointComponent = null;
   #waypointEditComponent = null;
+
   #handleDataChange = null;
   #handleModeChange = null;
+
   #mode = Mode.DEFAULT;
 
-  constructor({ waypointsContainerEl, destinations, offers, onDataChange, onModeChange }) {
-    this.#waypointsContainerEl = waypointsContainerEl;
+  constructor({ waypointsContainerElement, destinations, offers, onDataChange, onModeChange }) {
+    this.#waypointsContainerElement = waypointsContainerElement;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleDataChange = onDataChange;
@@ -51,7 +53,7 @@ export default class WaypointPresenter {
     });
 
     if (prevWaypointComponent === null || prevWaypointEditComponent === null) {
-      render(this.#waypointComponent, this.#waypointsContainerEl);
+      render(this.#waypointComponent, this.#waypointsContainerElement);
       return;
     }
 
@@ -114,6 +116,19 @@ export default class WaypointPresenter {
     }
   }
 
+  #replaceWaypointToEditedWaypoint = () => {
+    replace(this.#waypointEditComponent, this.#waypointComponent);
+    document.addEventListener('keydown', this.#escKeydownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  };
+
+  #replaceEditedWaypointToWaypoint = () => {
+    replace(this.#waypointComponent, this.#waypointEditComponent);
+    document.removeEventListener('keydown', this.#escKeydownHandler);
+    this.#mode = Mode.DEFAULT;
+  };
+
   #escKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
@@ -132,13 +147,9 @@ export default class WaypointPresenter {
   };
 
   #handleFormSubmit = (waypoint) => {
-    const isDatesFromEqual = isDatesEqual(this.#waypoint.dateFrom, waypoint.dateFrom);
-    const isDatesToEqual = isDatesEqual(this.#waypoint.dateTo, waypoint.dateTo);
-    const isPatchUpdate = isDatesFromEqual && isDatesToEqual;
-
     this.#handleDataChange(
       UserAction.UPDATE_WAYPOINT,
-      isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+      UpdateType.MINOR,
       waypoint,
     );
   };
@@ -157,18 +168,5 @@ export default class WaypointPresenter {
       UpdateType.MINOR,
       { ...this.#waypoint, isFavorite: !this.#waypoint.isFavorite },
     );
-  };
-
-  #replaceWaypointToEditedWaypoint = () => {
-    replace(this.#waypointEditComponent, this.#waypointComponent);
-    document.addEventListener('keydown', this.#escKeydownHandler);
-    this.#handleModeChange();
-    this.#mode = Mode.EDITING;
-  };
-
-  #replaceEditedWaypointToWaypoint = () => {
-    replace(this.#waypointComponent, this.#waypointEditComponent);
-    document.removeEventListener('keydown', this.#escKeydownHandler);
-    this.#mode = Mode.DEFAULT;
   };
 }

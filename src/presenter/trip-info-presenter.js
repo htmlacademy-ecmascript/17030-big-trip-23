@@ -1,15 +1,17 @@
 import TripInfoView from '../view/trip-info-view';
 import { remove, render, RenderPosition, replace } from '../framework/render';
+import { sortByDay } from '../utils/waypoint';
 
 export default class TripInfoPresenter {
-  #tripInfoContainerEl = null;
+  #tripInfoContainerElement = null;
   #waypointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+
   #tripInfoComponent = null;
 
-  constructor({ tripInfoContainerEl, waypointsModel, destinationsModel, offersModel }) {
-    this.#tripInfoContainerEl = tripInfoContainerEl;
+  constructor({ tripInfoContainerElement, waypointsModel, destinationsModel, offersModel }) {
+    this.#tripInfoContainerElement = tripInfoContainerElement;
     this.#waypointsModel = waypointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
@@ -18,7 +20,7 @@ export default class TripInfoPresenter {
   }
 
   get waypoints() {
-    return this.#waypointsModel.waypoints;
+    return [...this.#waypointsModel.waypoints].sort(sortByDay);
   }
 
   get destinations() {
@@ -30,6 +32,11 @@ export default class TripInfoPresenter {
   }
 
   init() {
+    if (!this.waypoints?.length) {
+      remove(this.#tripInfoComponent);
+      return;
+    }
+
     const prevTripInfoComponent = this.#tripInfoComponent;
 
     this.#tripInfoComponent = new TripInfoView({
@@ -39,7 +46,7 @@ export default class TripInfoPresenter {
     });
 
     if (prevTripInfoComponent === null) {
-      render(this.#tripInfoComponent, this.#tripInfoContainerEl, RenderPosition.AFTERBEGIN);
+      render(this.#tripInfoComponent, this.#tripInfoContainerElement, RenderPosition.AFTERBEGIN);
       return;
     }
 

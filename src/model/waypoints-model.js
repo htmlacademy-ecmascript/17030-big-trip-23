@@ -2,8 +2,8 @@ import Observable from '../framework/observable';
 import { UpdateType } from '../const';
 
 export default class WaypointsModel extends Observable {
-  #waypointsApiService = null;
   #waypoints = [];
+  #waypointsApiService = null;
 
   constructor({ waypointsApiService }) {
     super();
@@ -20,6 +20,7 @@ export default class WaypointsModel extends Observable {
       this.#waypoints = waypoints.map(this.#adaptToClient);
     } catch (e) {
       this.#waypoints = [];
+      throw e;
     }
 
     this._notify(UpdateType.INIT);

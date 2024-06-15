@@ -7,21 +7,23 @@ dayjs.extend(duration);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
-const MONTH_DAY_FORMAT = 'MMM D';
-const DAY_MONTH_FORMAT = 'D MMM';
-const TIME_FORMAT = 'HH:mm';
-const ISO_DATE_FORMAT = 'YYYY-MM-DD';
-const DATE_FORMAT = `DD/MM/YY ${TIME_FORMAT}`;
+const DateFormat = {
+  MONTH_DAY: 'MMM D',
+  DAY_MONTH: 'D MMM',
+  TIME: 'HH:mm',
+  ISO_DATE: 'YYYY-MM-DD',
+  DATE: 'DD/MM/YY HH:mm',
+};
 
-const getDateStringFromDate = (date) => date ? dayjs(date).format(ISO_DATE_FORMAT) : '';
+const getDateStringFromDate = (date) => date ? dayjs(date).format(DateFormat.ISO_DATE) : '';
 
-const getTimeStringFromDate = (date) => date ? dayjs(date).format(TIME_FORMAT) : '';
+const getTimeStringFromDate = (date) => date ? dayjs(date).format(DateFormat.TIME) : '';
 
-const humanizeMonthDay = (date) => date ? dayjs(date).format(MONTH_DAY_FORMAT) : '';
+const humanizeMonthDay = (date) => date ? dayjs(date).format(DateFormat.MONTH_DAY) : '';
 
-const humanizeDayMonth = (date) => date ? dayjs(date).format(DAY_MONTH_FORMAT) : '';
+const humanizeDayMonth = (date) => date ? dayjs(date).format(DateFormat.DAY_MONTH) : '';
 
-const humanizeDate = (date) => date ? dayjs(date).format(DATE_FORMAT) : '';
+const humanizeDate = (date) => date ? dayjs(date).format(DateFormat.DATE) : '';
 
 const getDiffDuration = (start, end) => {
   const dateStart = dayjs(start);
@@ -70,13 +72,11 @@ const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && day
 
 const isEventInFuture = (event) => dayjs().isBefore(event.dateFrom);
 
-const isDatesEqual = (date1, date2) => dayjs(date1).isSame(date2);
-
 const sortByDay = (a, b) => {
   const dateA = dayjs(a.dateFrom);
   const dateB = dayjs(b.dateFrom);
 
-  return dateA.diff(dateB, 'days');
+  return dateA.diff(dateB, 'D');
 };
 
 const sortByPrice = (a, b) => b.basePrice - a.basePrice;
@@ -98,7 +98,6 @@ export {
   isEventInPast,
   isEventInPresent,
   isEventInFuture,
-  isDatesEqual,
   sortByDay,
   sortByPrice,
   sortByTime,
