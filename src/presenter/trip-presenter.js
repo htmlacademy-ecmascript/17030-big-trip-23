@@ -52,6 +52,8 @@ export default class TripPresenter {
     this.#filterModel = filterModel;
     this.#handleNewEventDestroy = onNewEventDestroy;
 
+    this.#renderLoading();
+
     this.#waypointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }

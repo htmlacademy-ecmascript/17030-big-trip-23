@@ -15,6 +15,7 @@ export default class DestinationsModel {
       this.#destinations = await this.#waypointsApiService.destinations;
     } catch (err) {
       this.#destinations = [];
+      throw err;
     }
   }
 }

@@ -15,6 +15,7 @@ export default class OffersModel {
       this.#offers = await this.#waypointsApiService.offers;
     } catch (err) {
       this.#offers = [];
+      throw err;
     }
   }
 }

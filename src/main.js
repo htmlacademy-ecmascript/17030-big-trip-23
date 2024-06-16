@@ -24,53 +24,51 @@ const destinationsModel = new DestinationsModel({ waypointsApiService });
 const offersModel = new OffersModel({ waypointsApiService });
 const filterModel = new FilterModel();
 
+new TripInfoPresenter({
+  tripInfoContainerElement: tripMainElement,
+  waypointsModel,
+  destinationsModel,
+  offersModel,
+});
+new FilterPresenter({
+  filterContainerElement,
+  filterModel,
+  waypointsModel,
+});
+const tripPresenter = new TripPresenter({
+  containerElement: tripEventsElement,
+  waypointsModel,
+  destinationsModel,
+  offersModel,
+  filterModel,
+  onNewEventDestroy: handleNewEventFormClose,
+});
+
+const newEventButtonComponent = new NewEventButtonView({
+  onNewEventClick: handleNewEventBtnClick,
+});
+
+function handleNewEventFormClose() {
+  newEventButtonComponent.element.disabled = false;
+}
+
+function handleNewEventBtnClick() {
+  tripPresenter.createNewWaypoint();
+  newEventButtonComponent.element.disabled = true;
+}
+
+render(newEventButtonComponent, tripMainElement);
+
 const init = async () => {
-  const tripInfoPresenter = new TripInfoPresenter({
-    tripInfoContainerElement: tripMainElement,
-    waypointsModel,
-    destinationsModel,
-    offersModel,
-  });
-  const filterPresenter = new FilterPresenter({
-    filterContainerElement,
-    filterModel,
-    waypointsModel,
-  });
-  const tripPresenter = new TripPresenter({
-    containerElement: tripEventsElement,
-    waypointsModel,
-    destinationsModel,
-    offersModel,
-    filterModel,
-    onNewEventDestroy: handleNewEventFormClose,
-  });
-
-  const newEventButtonComponent = new NewEventButtonView({
-    onNewEventClick: handleNewEventBtnClick,
-  });
-
-  function handleNewEventFormClose() {
-    newEventButtonComponent.element.disabled = false;
+  try {
+    await Promise.all([
+      destinationsModel.init(),
+      offersModel.init(),
+    ]);
+    await waypointsModel.init();
+  } catch (err) {
+    tripPresenter.handleApiError();
   }
-
-  function handleNewEventBtnClick() {
-    tripPresenter.createNewWaypoint();
-    newEventButtonComponent.element.disabled = true;
-  }
-
-  tripInfoPresenter.init();
-  filterPresenter.init();
-  tripPresenter.init();
-
-  await destinationsModel.init();
-  await offersModel.init();
-  waypointsModel.init()
-    .catch(() => {
-      tripPresenter.handleApiError();
-    })
-    .finally(() => {
-      render(newEventButtonComponent, tripMainElement);
-    });
 };
 
 init();
