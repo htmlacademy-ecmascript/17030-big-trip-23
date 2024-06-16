@@ -13,7 +13,7 @@ export default class OffersModel {
   async init() {
     try {
       this.#offers = await this.#waypointsApiService.offers;
-    } catch (e) {
+    } catch (err) {
       this.#offers = [];
     }
   }

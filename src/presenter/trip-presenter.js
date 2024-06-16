@@ -206,7 +206,7 @@ export default class TripPresenter {
         try {
           await this.#waypointsModel.updateWaypoint(updateType, update);
           this.#waypointPresenters.get(update.id).resetView();
-        } catch (e) {
+        } catch (err) {
           this.#waypointPresenters.get(update.id).setAborting();
         }
         break;
@@ -214,7 +214,7 @@ export default class TripPresenter {
         this.#newWaypointPresenter.setSaving();
         try {
           await this.#waypointsModel.addWaypoint(updateType, update);
-        } catch (e) {
+        } catch (err) {
           this.#newWaypointPresenter.setAborting();
         }
         break;
@@ -222,7 +222,7 @@ export default class TripPresenter {
         this.#waypointPresenters.get(update.id).setDeleting();
         try {
           await this.#waypointsModel.removeWaypoint(updateType, update);
-        } catch (e) {
+        } catch (err) {
           this.#waypointPresenters.get(update.id).setAborting();
         }
         break;
