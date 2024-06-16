@@ -72,18 +72,18 @@ const isEventInPresent = (event) => dayjs().isSameOrAfter(event.dateFrom) && day
 
 const isEventInFuture = (event) => dayjs().isBefore(event.dateFrom);
 
-const sortByDay = (a, b) => {
-  const dateA = dayjs(a.dateFrom);
-  const dateB = dayjs(b.dateFrom);
+const sortByDay = (eventA, eventB) => {
+  const dateA = dayjs(eventA.dateFrom);
+  const dateB = dayjs(eventB.dateFrom);
 
   return dateA.diff(dateB, 'D');
 };
 
-const sortByPrice = (a, b) => b.basePrice - a.basePrice;
+const sortByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
 
-const sortByTime = (a, b) => {
-  const durationA = getDiffDuration(a.dateFrom, a.dateTo);
-  const durationB = getDiffDuration(b.dateFrom, b.dateTo);
+const sortByTime = (eventA, eventB) => {
+  const durationA = getDiffDuration(eventA.dateFrom, eventA.dateTo);
+  const durationB = getDiffDuration(eventB.dateFrom, eventB.dateTo);
 
   return durationB.asSeconds() - durationA.asSeconds();
 };

@@ -118,10 +118,10 @@ const createDestinationPhotoTemplate = (picture) => {
   );
 };
 
-const createDestinationPhotosTemplate = (picture) => (
+const createDestinationPhotosTemplate = (pictures) => (
   `<div class="event__photos-container">
     <div class="event__photos-tape">
-      ${picture.map(createDestinationPhotoTemplate).join('')}
+      ${pictures.map(createDestinationPhotoTemplate).join('')}
     </div>
   </div>`
 );
