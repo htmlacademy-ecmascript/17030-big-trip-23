@@ -19,20 +19,20 @@ const BLANK_WAYPOINT = {
 };
 
 const createWaypointTypeTemplate = ({ eventType, pickedType, waypointId }) => {
-  const matchingString = `event-type-${eventType}-${waypointId}`;
+  const labelForAndInputIdValue = `event-type-${eventType}-${waypointId}`;
   const label = capitaliseFirstLetter(eventType);
   const isCheckedAttrActive = eventType === pickedType ? 'checked' : '';
 
   return (
     `<div class="event__type-item">
-      <input id="${matchingString}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${isCheckedAttrActive}>
-      <label class="event__type-label  event__type-label--${eventType}" for="${matchingString}">${label}</label>
+      <input id="${labelForAndInputIdValue}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${isCheckedAttrActive}>
+      <label class="event__type-label  event__type-label--${eventType}" for="${labelForAndInputIdValue}">${label}</label>
     </div>`
   );
 };
 
 const createWaypointTypeSelectTemplate = ({ pickedType, waypointId, isDisabled }) => {
-  const matchingString = `event-type-toggle-${waypointId}`;
+  const labelForAndInputIdValue = `event-type-toggle-${waypointId}`;
   const disabledAttr = isDisabled ? 'disabled' : '';
   const waypointTypesTemplate = Object.values(WaypointEventType).map((eventType) => createWaypointTypeTemplate({
     eventType,
@@ -42,11 +42,11 @@ const createWaypointTypeSelectTemplate = ({ pickedType, waypointId, isDisabled }
 
   return (
     `<div class="event__type-wrapper">
-      <label class="event__type  event__type-btn" for="${matchingString}">
+      <label class="event__type  event__type-btn" for="${labelForAndInputIdValue}">
         <span class="visually-hidden">Choose event type</span>
         <img class="event__type-icon" width="17" height="17" src="img/icons/${pickedType}.png" alt="Event type icon">
       </label>
-      <input class="event__type-toggle  visually-hidden" id="${matchingString}" type="checkbox" ${disabledAttr}>
+      <input class="event__type-toggle  visually-hidden" id="${labelForAndInputIdValue}" type="checkbox" ${disabledAttr}>
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
@@ -64,17 +64,17 @@ const createDestinationOptionTemplate = (name) => (
 
 const createDestinationSelectTemplate = ({ pickedType, destination, destinations, waypointId, isDisabled }) => {
   const { name = '' } = destination;
-  const matchingString = `event-destination-${waypointId}`;
-  const listMatchingString = `destination-list-${waypointId}`;
+  const labelForAndInputIdValue = `event-destination-${waypointId}`;
+  const datalistIdAndInputListValue = `destination-list-${waypointId}`;
   const disabledAttr = isDisabled ? 'disabled' : '';
 
   return (
     `<div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="${matchingString}">
+      <label class="event__label  event__type-output" for="${labelForAndInputIdValue}">
         ${capitaliseFirstLetter(pickedType)}
       </label>
-      <input class="event__input  event__input--destination" id="${matchingString}" type="text" name="event-destination" value="${he.encode(name)}" list="${listMatchingString}" ${disabledAttr}>
-      <datalist id="${listMatchingString}">
+      <input class="event__input  event__input--destination" id="${labelForAndInputIdValue}" type="text" name="event-destination" value="${he.encode(name)}" list="${datalistIdAndInputListValue}" ${disabledAttr}>
+      <datalist id="${datalistIdAndInputListValue}">
         ${destinations.map((it) => createDestinationOptionTemplate(it.name)).join('')}
       </datalist>
     </div>`
