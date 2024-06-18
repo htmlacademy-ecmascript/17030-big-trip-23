@@ -49,24 +49,25 @@ const newEventButtonComponent = new NewEventButtonView({
 });
 
 function handleNewEventFormClose() {
-  newEventButtonComponent.element.disabled = false;
+  newEventButtonComponent.enable();
 }
 
 function handleNewEventBtnClick() {
   tripPresenter.createNewWaypoint();
-  newEventButtonComponent.element.disabled = true;
 }
 
 render(newEventButtonComponent, tripMainElement);
 filterPresenter.init();
 
 const init = async () => {
+  newEventButtonComponent.disable();
   try {
     await Promise.all([
       destinationsModel.init(),
       offersModel.init(),
     ]);
     await waypointsModel.init();
+    newEventButtonComponent.enable();
   } catch (err) {
     tripPresenter.handleApiError();
   }
