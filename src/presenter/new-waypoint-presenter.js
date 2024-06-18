@@ -46,7 +46,7 @@ export default class NewWaypointPresenter {
     remove(this.#waypointEditComponent);
     this.#waypointEditComponent = null;
 
-    document.addEventListener('keydown', this.#escKeydownHandler);
+    document.removeEventListener('keydown', this.#escKeydownHandler);
   }
 
   setSaving() {
