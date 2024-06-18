@@ -27,8 +27,8 @@ export default class NewWaypointPresenter {
     this.#waypointEditComponent = new WaypointEditView({
       destinations: this.#destinations,
       offers: this.#offers,
-      onSubmit: this.#handleFormSubmit,
-      onRemove: this.#handleRemoveClick,
+      onFormSubmit: this.#handleFormSubmit,
+      onFormReset: this.#handleFormReset,
     });
 
     render(this.#waypointEditComponent, this.#waypointsContainerElement, RenderPosition.AFTERBEGIN);
@@ -76,7 +76,7 @@ export default class NewWaypointPresenter {
     );
   };
 
-  #handleRemoveClick = () => {
+  #handleFormReset = () => {
     this.destroy();
   };
 

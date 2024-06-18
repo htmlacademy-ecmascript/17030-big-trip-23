@@ -227,20 +227,20 @@ export default class WaypointEditView extends AbstractStatefulView {
   #destinations = [];
   #offers = [];
   #handleBtnFoldClick = null;
-  #handleSubmit = null;
-  #handleRemove = null;
+  #handleFormSubmit = null;
+  #handleFormReset = null;
   #eventStartDatepicker = null;
   #eventEndDatepicker = null;
   #isNewWaypoint = null;
 
-  constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onSubmit, onRemove }) {
+  constructor({ waypoint = BLANK_WAYPOINT, destinations, offers, onBtnFoldClick, onFormSubmit, onFormReset }) {
     super();
     this._setState(WaypointEditView.parseWaypointToState(waypoint));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleBtnFoldClick = onBtnFoldClick;
-    this.#handleSubmit = onSubmit;
-    this.#handleRemove = onRemove;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormReset = onFormReset;
     this.#isNewWaypoint = !waypoint.id;
 
     this._restoreHandlers();
@@ -275,7 +275,7 @@ export default class WaypointEditView extends AbstractStatefulView {
     const rollupBtnElement = this.element.querySelector('.event__rollup-btn');
 
     editFormElement.addEventListener('submit', this.#formSubmitHandler);
-    editFormElement.addEventListener('reset', this.#waypointRemoveHandler);
+    editFormElement.addEventListener('reset', this.#formResetHandler);
     editFormElement.addEventListener('change', this.#formChangeHandler);
 
     destinationInputElement.addEventListener('change', this.#destinationChangeHandler);
@@ -302,12 +302,12 @@ export default class WaypointEditView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleSubmit(WaypointEditView.parseStateToWaypoint(this._state));
+    this.#handleFormSubmit(WaypointEditView.parseStateToWaypoint(this._state));
   };
 
-  #waypointRemoveHandler = (evt) => {
+  #formResetHandler = (evt) => {
     evt.preventDefault();
-    this.#handleRemove(WaypointEditView.parseStateToWaypoint(this._state));
+    this.#handleFormReset(WaypointEditView.parseStateToWaypoint(this._state));
   };
 
   #offerChangeHandler = (evt) => {

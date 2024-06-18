@@ -104,7 +104,7 @@ export default class TripPresenter {
   #renderSortingComponent() {
     this.#sortingComponent = new SortingView({
       currentSortType: this.#currentSortType,
-      onSortTypeChange: this.#handleSortTypeChange,
+      onSortingTypeChange: this.#handleSortingTypeChange,
     });
     render(this.#sortingComponent, this.#containerElement);
   }
@@ -259,7 +259,7 @@ export default class TripPresenter {
     }
   };
 
-  #handleSortTypeChange = (sortType) => {
+  #handleSortingTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
