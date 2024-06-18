@@ -124,9 +124,10 @@ export default class TripPresenter {
     this.#waypointPresenters.clear();
     this.#newWaypointPresenter?.destroy();
 
-    remove(this.#sortingComponent);
-    remove(this.#failedLoadComponent);
     remove(this.#loadingComponent);
+    remove(this.#failedLoadComponent);
+    remove(this.#sortingComponent);
+    remove(this.#eventsListComponent);
 
     if (this.#noEventsComponent) {
       remove(this.#noEventsComponent);
@@ -196,7 +197,7 @@ export default class TripPresenter {
 
   #handleModeChange = () => {
     this.#waypointPresenters.forEach((presenter) => presenter.resetView());
-    this.#newWaypointPresenter.destroy();
+    this.#newWaypointPresenter?.destroy();
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
