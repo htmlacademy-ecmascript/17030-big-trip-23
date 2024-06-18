@@ -30,7 +30,7 @@ new TripInfoPresenter({
   destinationsModel,
   offersModel,
 });
-new FilterPresenter({
+const filterPresenter = new FilterPresenter({
   filterContainerElement,
   filterModel,
   waypointsModel,
@@ -58,6 +58,7 @@ function handleNewEventBtnClick() {
 }
 
 render(newEventButtonComponent, tripMainElement);
+filterPresenter.init();
 
 const init = async () => {
   try {
