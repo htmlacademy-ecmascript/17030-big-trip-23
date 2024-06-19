@@ -18,9 +18,9 @@ export default class WaypointsModel extends Observable {
     try {
       const waypoints = await this.#waypointsApiService.waypoints;
       this.#waypoints = waypoints.map(this.#adaptToClient);
-    } catch (e) {
+    } catch (err) {
       this.#waypoints = [];
-      throw e;
+      throw err;
     }
 
     this._notify(UpdateType.INIT);
@@ -42,7 +42,7 @@ export default class WaypointsModel extends Observable {
         ...this.#waypoints.slice(index + 1),
       ];
       this._notify(updateType, update);
-    } catch (e) {
+    } catch (err) {
       throw new Error(`Cannot update waypoint with id ${update.id}`);
     }
   }
@@ -53,7 +53,7 @@ export default class WaypointsModel extends Observable {
       const newWaypoint = this.#adaptToClient(response);
       this.#waypoints = [newWaypoint, ...this.#waypoints];
       this._notify(updateType, newWaypoint);
-    } catch (e) {
+    } catch (err) {
       throw new Error(`Cannot add waypoint with id ${update.id}`);
     }
   }
@@ -72,7 +72,7 @@ export default class WaypointsModel extends Observable {
         ...this.#waypoints.slice(index + 1),
       ];
       this._notify(updateType, update);
-    } catch (e) {
+    } catch (err) {
       throw new Error(`Cannot remove waypoint with id ${update.id}`);
     }
   }

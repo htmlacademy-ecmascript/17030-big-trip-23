@@ -1,3 +1,3 @@
-const capitaliseFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
+const capitaliseFirstLetter = (phrase) => phrase.charAt(0).toUpperCase() + phrase.slice(1);
 
 export { capitaliseFirstLetter };
