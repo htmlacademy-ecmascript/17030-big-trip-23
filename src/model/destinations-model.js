@@ -13,8 +13,9 @@ export default class DestinationsModel {
   async init() {
     try {
       this.#destinations = await this.#waypointsApiService.destinations;
-    } catch (e) {
+    } catch (err) {
       this.#destinations = [];
+      throw err;
     }
   }
 }

@@ -52,6 +52,8 @@ export default class TripPresenter {
     this.#filterModel = filterModel;
     this.#handleNewEventDestroy = onNewEventDestroy;
 
+    this.#renderLoading();
+
     this.#waypointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -102,7 +104,7 @@ export default class TripPresenter {
   #renderSortingComponent() {
     this.#sortingComponent = new SortingView({
       currentSortType: this.#currentSortType,
-      onSortTypeChange: this.#handleSortTypeChange,
+      onSortingTypeChange: this.#handleSortingTypeChange,
     });
     render(this.#sortingComponent, this.#containerElement);
   }
@@ -122,9 +124,10 @@ export default class TripPresenter {
     this.#waypointPresenters.clear();
     this.#newWaypointPresenter?.destroy();
 
-    remove(this.#sortingComponent);
-    remove(this.#failedLoadComponent);
     remove(this.#loadingComponent);
+    remove(this.#failedLoadComponent);
+    remove(this.#sortingComponent);
+    remove(this.#eventsListComponent);
 
     if (this.#noEventsComponent) {
       remove(this.#noEventsComponent);
@@ -194,7 +197,7 @@ export default class TripPresenter {
 
   #handleModeChange = () => {
     this.#waypointPresenters.forEach((presenter) => presenter.resetView());
-    this.#newWaypointPresenter.destroy();
+    this.#newWaypointPresenter?.destroy();
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
@@ -206,7 +209,7 @@ export default class TripPresenter {
         try {
           await this.#waypointsModel.updateWaypoint(updateType, update);
           this.#waypointPresenters.get(update.id).resetView();
-        } catch (e) {
+        } catch (err) {
           this.#waypointPresenters.get(update.id).setAborting();
         }
         break;
@@ -214,7 +217,7 @@ export default class TripPresenter {
         this.#newWaypointPresenter.setSaving();
         try {
           await this.#waypointsModel.addWaypoint(updateType, update);
-        } catch (e) {
+        } catch (err) {
           this.#newWaypointPresenter.setAborting();
         }
         break;
@@ -222,7 +225,7 @@ export default class TripPresenter {
         this.#waypointPresenters.get(update.id).setDeleting();
         try {
           await this.#waypointsModel.removeWaypoint(updateType, update);
-        } catch (e) {
+        } catch (err) {
           this.#waypointPresenters.get(update.id).setAborting();
         }
         break;
@@ -256,7 +259,7 @@ export default class TripPresenter {
     }
   };
 
-  #handleSortTypeChange = (sortType) => {
+  #handleSortingTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }

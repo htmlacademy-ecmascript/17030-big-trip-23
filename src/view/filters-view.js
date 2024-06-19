@@ -5,12 +5,12 @@ const createFilterItemTemplate = (filter, activeFilter) => {
   const { type, hasItems } = filter;
   const checkedAttr = activeFilter === type ? 'checked' : '';
   const disabledAttr = !hasItems ? 'disabled' : '';
-  const matchingString = `filter-${type}`;
+  const labelForAndInputIdValue = `filter-${type}`;
 
   return (
     `<div class="trip-filters__filter">
-      <input id="${matchingString}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${checkedAttr} ${disabledAttr}>
-      <label class="trip-filters__filter-label" for="${matchingString}">${capitaliseFirstLetter(type)}</label>
+      <input id="${labelForAndInputIdValue}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${checkedAttr} ${disabledAttr}>
+      <label class="trip-filters__filter-label" for="${labelForAndInputIdValue}">${capitaliseFirstLetter(type)}</label>
     </div>`
   );
 };
